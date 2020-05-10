@@ -17,8 +17,6 @@ library(readxl)
 
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ
 
-
-
 ## Importacao - Casos confirmados e obitos do RJ
 
 Link = "https://sites.google.com/site/portaldadosuffcontracovid/home"
@@ -27,11 +25,31 @@ download.file(url = paste0(Link,"/",File), destfile = File)
 load(File) 
 GET.UFF.READ(c("CASOS.CONFIRMADOS.RJ.R","OBITOS.RJ.R"))
 
-## Data da primeira medida de cada municipio - Criar uma funcao
+## Data da primeira medida de cada municipio - Tem erro!
 
-PrimeiraMedida <- Politicas_RiodeJaneiro %>%
-                    select(Municipio, Inicio, Classificacao) %>%
-                    filter(Classificacao != "Outros")
+Medidas <- Politicas_RiodeJaneiro_1_ %>%
+  select(Municipio, Inicio, Classificao) %>%
+  filter(Classificao != "Outros")
+View(Medidas)
+
+PrimeiraMedida <- function(x){
+  linhas <- nrow(x)
+  colunas <- ncol(x)
+  d_medida <- data.frame(Municipio = c(NULL), Dia = c(NULL))
+  t = 0
+  for (i in 1:linhas){
+    for (j in 1:colunas){
+      if (x[i,j] == "Medidas de Prevenção"){
+        t = t + 1
+        d_medida[t,1] = rownames(x)[i]
+        d_medida[t,2] = x[i,2]
+        break
+      }
+    }
+  }
+  colnames(d_medida) <- c("Municipio", "Data")
+  return(d_medida)
+}
 
 ## Data do primeiro caso confirmado 
 
