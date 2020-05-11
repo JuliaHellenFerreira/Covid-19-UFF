@@ -32,14 +32,45 @@ GET.UFF.READ(c("CASOS.CONFIRMADOS.RJ.R","OBITOS.RJ.R"))
 Politicas_RiodeJaneiro_1_$Inicio <- as.Date(Politicas_RiodeJaneiro_1_$Inicio)
 Medidas <- Politicas_RiodeJaneiro_1_ %>%
   select(Municipio, Inicio, Classificacao) %>%
-  filter(Classificacao != "Outros") %>%
+  filter(Municipio == "Itaboraí" | 
+           Municipio == "Volta Redonda" |
+           Municipio == "Niterói" |
+           Municipio == "Rio de Janeiro" |
+           Municipio == "São João de Meriti" |
+           Municipio == "Mesquita" |
+           Municipio == "Nova Iguaçu" |
+           Municipio == "Duque de Caxias" |
+           Municipio == "São Gonçalo" |
+           Municipio == "Belford Roxo",
+         Classificacao != "Outros") %>%
   arrange(Inicio)
 
-### ((((Separar por medidas)))):
+####################### Funcao para separar por medidas #############################
+
+PrimeiraMedida <- function(x, municipio, medida){
+  linhas <- nrow(x)
+  colunas <- ncol(x)
+  Medida <- data.frame(Municipio = c(NULL),
+                     Ocorrencia = c(NULL),
+                     Medida = c(NULL))
+  for (i in 1: linhas){
+    for (j in 1: colunas){
+      loc <- which(Medidas$Municipio == municipio &
+                       Medidas$Classificacao == medida)
+      loc <- as.data.frame(teste)
+      lin <- loc[1,1]
+      Medida[i,1] <- x[lin,1]
+      Medida[i,2] <- x[lin,2]
+      Medida[i,3] <- x[lin,3]
+    }
+    break
+  }
+  return(Medida)
+}
 
 ## Data do primeiro caso confirmado:
 
-######################### Funcao para encontrar o primeiro caso confirmado ###############################
+################## Funcao para encontrar o primeiro caso confirmado ###############################
 
 PrimeiroCaso <- function(x){
   linhas <- nrow(x)
@@ -60,7 +91,7 @@ PrimeiroCaso <- function(x){
 }
 CASOS.CONFIRMADOS.RJ <- PrimeiroCaso(CASOS.CONFIRMADOS.RJ)
 
-############################ Filtrando os municipios que ire usar ##########################################
+####################### Filtrando os municipios que ire usar ##########################################
 
 CASOS.CONFIRMADOS.RJ$Municipio = rownames(CASOS.CONFIRMADOS.RJ)
 Municipios_PrimeiroCaso <- PrimeiroCaso(CASOS.CONFIRMADOS.RJ)
@@ -70,9 +101,15 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
                           Municipio == "Niterói/RJ" |
                           Municipio == "Rio de Janeiro/RJ" |
                           Municipio == "São João de Meriti/RJ" |
-                          Municipio == "Mesquita/RJ")
+                          Municipio == "Mesquita/RJ" |
+                          Municipio == "Nova Iguaçu/RJ" |
+                          Municipio == "Duque de Caxias/RJ" |
+                          Municipio == "São Gonçalo/RJ" |
+                          Municipio == "Belford Roxo/RJ")
 
-## Distancia (em dias) ate o primeiro caso confirmado - Em andamento
+## Criando um dataframe com os casos confirmados e a data da primeira medida
+
+## Distancia (em dias) ate o primeiro caso confirmado
 
 DADOS$Distancia <- with(DADOS, as.Date(DATA_FIM, "%d/%m/%Y") - as.Date(DATA_INICIO, "%d/%m/%Y"))
 DADOS
@@ -81,5 +118,5 @@ DADOS
 
 Municipios <- plot_ly(Politicas_RiodeJaneiro, 
                       x = "Municipio",
-                      y = "Inicio",
+                      y = "Distancia",
                       type = "bar")
