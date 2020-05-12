@@ -2,11 +2,12 @@
 
 ## Pacotes
 
-pacotes <- c("magrittr","knitr","dplyr","shiny","plotly","devtools", "readxl")
+pacotes <- c("magrittr","knitr","dplyr", "lubridate","shiny","plotly","devtools", "readxl")
 for(pacote in pacotes){
   if(!is.element(pacote,installed.packages())){install.packages(pacote)}
 }
 
+library(lubridate)
 library(magrittr)
 library(knitr)
 library(dplyr)
@@ -113,7 +114,7 @@ PrimeiroCaso <- function(x){
       }
     }
   }
-  colnames(ocor) <- c("Municipio", "Pimeiro_Caso")
+  colnames(ocor) <- c("Municipio", "Primeiro_Caso")
   return(ocor)
 }
 
@@ -138,13 +139,18 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
 
 PoliticasPublicas <- inner_join(municipio_rj, RJ_PrimeiroCaso, by = "Municipio")
 
-View(PoliticasPublicas)
+
 
 ## Distancia (em dias) ate o primeiro caso confirmado
 
+PoliticasPublicas %>% 
+  mutate(Distancia = as.numeric(dmy(Dia_Decreto) - dmy(Primeiro_Caso)))
+
+View(PoliticasPublicas)
+
 # Grafico - Em andamento 
 
-Municipios <- plot_ly(Politicas_RiodeJaneiro, 
+PoliticasGrafico <- plot_ly(Politicas_RiodeJaneiro, 
                       x = "Municipio",
                       y = "Distancia",
                       type = "bar")
