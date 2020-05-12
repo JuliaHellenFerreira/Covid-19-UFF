@@ -47,26 +47,49 @@ Medidas <- Politicas_RiodeJaneiro_1_ %>%
 
 ####################### Funcao para separar por medidas #############################
 
-PrimeiraMedida <- function(x, municipio, medida){
+PrimeiraMedida <- function(x){
+  Med <- c("Instalações Hospitalares", "Medidas de Prevenção",
+           "Gabinete de Crise", "Situação de Emergência",
+           "Flexibilização de funcionamento dos comércios", 
+           "Fechamento de comércio", "Servidores em grupo de risco",
+           "Calamidade Pública", "Funcionamento do transporte",
+           "Regras de Isolamento", "Funcionamento de supermercados",
+           "Disk Aglomeração", "Cestas Básica",
+           "Circulação de Acesso", "Suspensão de aulas",
+           "Auxílio Emergencial", "Uso de Máscara",
+           "Fundo de Crédito Emergencial", "Fechamento de feiras livres",
+           "Procedimentos em funerárias")
+  Mun <- c("Rio de Janeiro", "Niterói", "São Gonçalo",
+           "Mesquita", "Belford Roxo", "Volta Redonda",
+           "Itaboraí", "São João de Meriti", "Duque de Caxias",
+           "Nova Iguaçu")
   linhas <- nrow(x)
   colunas <- ncol(x)
   Medida <- data.frame(Municipio = c(NULL),
-                     Ocorrencia = c(NULL),
-                     Medida = c(NULL))
-  for (i in 1: linhas){
-    for (j in 1: colunas){
-      loc <- which(Medidas$Municipio == municipio &
-                       Medidas$Classificacao == medida)
-      loc <- as.data.frame(teste)
-      lin <- loc[1,1]
-      Medida[i,1] <- x[lin,1]
-      Medida[i,2] <- x[lin,2]
-      Medida[i,3] <- x[lin,3]
-    }
-    break
+                       Ocorrencia = c(NULL),
+                       Medida = c(NULL))
+  i <- 0
+  for (l in 1:length(Med)){
+    Medi <- Med[l]
+    loc <- NULL
+    for (k in 1: length(Mun)){
+      Muni <- Mun[k]
+      loc <- which(Medidas$Municipio == Muni &
+                     Medidas$Classificacao == Medi)
+      if (length(loc) != 0 ){
+        i = i + 1
+        lin <- loc[1]
+        Medida[i,1] <- x[lin,1]
+        Medida[i,2] <- x[lin,2]
+        Medida[i,3] <- x[lin,3]
+      }
+    }  
   }
+  colnames(Medida) <- c("Municipio", "Dia do Decreto", "Medidas")
   return(Medida)
 }
+
+municipio_rj <- PrimeiraMedida(Medidas)
 
 ## Data do primeiro caso confirmado:
 
@@ -89,14 +112,14 @@ PrimeiroCaso <- function(x){
   colnames(ocor) <- c("Municipio", "Ocorrencia")
   return(ocor)
 }
-CASOS.CONFIRMADOS.RJ <- PrimeiroCaso(CASOS.CONFIRMADOS.RJ)
+
 
 ####################### Filtrando os municipios que ire usar ##########################################
 
 CASOS.CONFIRMADOS.RJ$Municipio = rownames(CASOS.CONFIRMADOS.RJ)
 Municipios_PrimeiroCaso <- PrimeiroCaso(CASOS.CONFIRMADOS.RJ)
 RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
-                   filter(Municipio == "Itaboraí/R" | 
+                   filter(Municipio == "Itaboraí/RJ" | 
                           Municipio == "Volta Redonda/RJ" |
                           Municipio == "Niterói/RJ" |
                           Municipio == "Rio de Janeiro/RJ" |
@@ -107,7 +130,11 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
                           Municipio == "São Gonçalo/RJ" |
                           Municipio == "Belford Roxo/RJ")
 
+
+
 ## Criando um dataframe com os casos confirmados e a data da primeira medida
+
+
 
 ## Distancia (em dias) ate o primeiro caso confirmado
 
