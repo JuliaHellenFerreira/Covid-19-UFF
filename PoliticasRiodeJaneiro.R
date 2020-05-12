@@ -15,7 +15,11 @@ library(plotly)
 library(devtools)
 library(readxl)
 
-## Leitura dos Dados - Politicas Publicas nos municipios do RJ (((((( Retirar do Site))))))
+## Leitura dos Dados - Politicas Publicas nos municipios do RJ (((((( Retirar do Site)))
+
+EventosCOVIDMunicipiosUFs <- read_excel("C:/Users/jorge/Downloads/EventosCOVIDMunicipiosUFs.xlsx")
+PoliticasRJ <- EventosCOVIDMunicipiosUFs
+
 
 ## Importacao - Casos confirmados e obitos do RJ
 
@@ -29,21 +33,21 @@ GET.UFF.READ(c("CASOS.CONFIRMADOS.RJ.R","OBITOS.RJ.R"))
 
 ###################### Medidas de cada municipio ########################
 
-Politicas_RiodeJaneiro_1_$Inicio <- as.Date(Politicas_RiodeJaneiro_1_$Inicio)
-Medidas <- Politicas_RiodeJaneiro_1_ %>%
-  select(Municipio, Inicio, Classificacao) %>%
-  filter(Municipio == "Itaboraí" | 
-           Municipio == "Volta Redonda" |
-           Municipio == "Niterói" |
-           Municipio == "Rio de Janeiro" |
-           Municipio == "São João de Meriti" |
-           Municipio == "Mesquita" |
-           Municipio == "Nova Iguaçu" |
-           Municipio == "Duque de Caxias" |
-           Municipio == "São Gonçalo" |
-           Municipio == "Belford Roxo",
-         Classificacao != "Outros") %>%
-  arrange(Inicio)
+PoliticasRJ$Início <- as.Date(PoliticasRJ$Início)
+Medidas <- PoliticasRJ %>%
+  select(`Estado/Municípios`, Início, Classificação) %>%
+  filter(`Estado/Municípios` == "Itaboraí/RJ" | 
+           `Estado/Municípios` == "Volta Redonda/RJ" |
+           `Estado/Municípios` == "Niterói/RJ" |
+           `Estado/Municípios` == "Rio de Janeiro/RJ" |
+           `Estado/Municípios` == "São João de Meriti/RJ" |
+           `Estado/Municípios` == "Mesquita/RJ" |
+           `Estado/Municípios` == "Nova Iguaçu/RJ" |
+           `Estado/Municípios` == "Duque de Caxias/RJ" |
+           `Estado/Municípios` == "São Gonçalo/RJ" |
+           `Estado/Municípios` == "Belford Roxo/RJ",
+         Classificação != "Outros") %>%
+  arrange(Início)
 
 ####################### Funcao para separar por medidas #############################
 
@@ -59,10 +63,10 @@ PrimeiraMedida <- function(x){
            "Auxílio Emergencial", "Uso de Máscara",
            "Fundo de Crédito Emergencial", "Fechamento de feiras livres",
            "Procedimentos em funerárias")
-  Mun <- c("Rio de Janeiro", "Niterói", "São Gonçalo",
-           "Mesquita", "Belford Roxo", "Volta Redonda",
-           "Itaboraí", "São João de Meriti", "Duque de Caxias",
-           "Nova Iguaçu")
+  Mun <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
+           "Mesquita/RJ", "Belford Roxo/RJ", "Volta Redonda/RJ",
+           "Itaboraí/RJ", "São João de Meriti/RJ", "Duque de Caxias/RJ",
+           "Nova Iguaçu/RJ")
   linhas <- nrow(x)
   colunas <- ncol(x)
   Medida <- data.frame(Municipio = c(NULL),
@@ -74,8 +78,8 @@ PrimeiraMedida <- function(x){
     loc <- NULL
     for (k in 1: length(Mun)){
       Muni <- Mun[k]
-      loc <- which(Medidas$Municipio == Muni &
-                     Medidas$Classificacao == Medi)
+      loc <- which(x$`Estado/Municípios` == Muni &
+                     x$Classificação == Medi)
       if (length(loc) != 0 ){
         i = i + 1
         lin <- loc[1]
@@ -85,7 +89,7 @@ PrimeiraMedida <- function(x){
       }
     }  
   }
-  colnames(Medida) <- c("Municipio", "Dia do Decreto", "Medidas")
+  colnames(Medida) <- c("Municipio", "Dia_Decreto", "Medidas")
   return(Medida)
 }
 
@@ -109,7 +113,7 @@ PrimeiroCaso <- function(x){
       }
     }
   }
-  colnames(ocor) <- c("Municipio", "Ocorrencia")
+  colnames(ocor) <- c("Municipio", "Pimeiro_Caso")
   return(ocor)
 }
 
@@ -130,16 +134,13 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
                           Municipio == "São Gonçalo/RJ" |
                           Municipio == "Belford Roxo/RJ")
 
-
-
 ## Criando um dataframe com os casos confirmados e a data da primeira medida
 
+PoliticasPublicas <- inner_join(municipio_rj, RJ_PrimeiroCaso, by = "Municipio")
 
+View(PoliticasPublicas)
 
 ## Distancia (em dias) ate o primeiro caso confirmado
-
-DADOS$Distancia <- with(DADOS, as.Date(DATA_FIM, "%d/%m/%Y") - as.Date(DATA_INICIO, "%d/%m/%Y"))
-DADOS
 
 # Grafico - Em andamento 
 
