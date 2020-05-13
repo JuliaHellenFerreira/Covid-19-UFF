@@ -21,7 +21,6 @@ library(readxl)
 EventosCOVIDMunicipiosUFs <- read_excel("C:/Users/jorge/Downloads/EventosCOVIDMunicipiosUFs.xlsx")
 PoliticasRJ <- EventosCOVIDMunicipiosUFs
 
-
 ## Importacao - Casos confirmados e obitos do RJ
 
 Link = "https://sites.google.com/site/portaldadosuffcontracovid/home"
@@ -135,22 +134,51 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
                           Municipio == "São Gonçalo/RJ" |
                           Municipio == "Belford Roxo/RJ")
 
+## Número de obitos 
+
+N_Obitos <- function(x, mun){
+  linhas <- nrow(x)
+  colunas <- ncol(x)
+  obitos <- data.frame(Municipio = c(NULL),
+                       Total = c(NULL))
+  Mun <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
+           "Mesquita/RJ", "Belford Roxo/RJ", "Volta Redonda/RJ",
+           "Itaboraí/RJ", "São João de Meriti/RJ", "Duque de Caxias/RJ",
+           "Nova Iguaçu/RJ")
+  for (k in 1: length(Mun)){
+    muni <- Mun[k]
+  for (i in 1:linhas){
+    total = 0
+    for (j in 1:colunas){
+      if (row.names(x) == muni)
+      total = total + x[[i]][[j]] ## Não funciona! 
+    }
+    obitos[i,1] = rownames(x)[i]
+  }
+    obitos[i,2] = total
+  }
+  colnames(obitos) <- c("Municipio", "Total_Obitos")
+  return(obitos)
+}
+
+N_Obitos(OBITOS.RJ)
+
 ## Criando um dataframe com os casos confirmados e a data da primeira medida
 
 PoliticasPublicas <- inner_join(municipio_rj, RJ_PrimeiroCaso, by = "Municipio")
 
-
-
 ## Distancia (em dias) ate o primeiro caso confirmado
 
-PoliticasPublicas %>% 
-  mutate(Distancia = as.numeric(dmy(Dia_Decreto) - dmy(Primeiro_Caso)))
-
+PoliticasPublicas$Distancia <- (as.Date(PoliticasPublicas$Dia_Decreto) - as.Date(PoliticasPublicas$Primeiro_Caso))
 View(PoliticasPublicas)
 
 # Grafico - Em andamento 
 
-PoliticasGrafico <- plot_ly(Politicas_RiodeJaneiro, 
+Politicas_MedidasPrevencao <- PoliticasPublicas %>%
+  select(Municipio, Distancia, Medidas) %>%
+  filter(Medidas == "Medidas de Prevenção")
+
+PoliticasGrafico <- plot_ly(Politicas_MedidasPrevencao, 
                       x = "Municipio",
                       y = "Distancia",
                       type = "bar")
