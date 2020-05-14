@@ -163,20 +163,21 @@ PoliticasPublicas <- inner_join(municipio_rj, RJ_PrimeiroCaso, by = "Municipio")
 ## Distancia (em dias) ate o primeiro caso confirmado
 
 PoliticasPublicas$Distancia <- (as.Date(PoliticasPublicas$Dia_Decreto) - as.Date(PoliticasPublicas$Primeiro_Caso))
+PoliticasPublicas$Distancia <- as.numeric(PoliticasPublicas$Distancia)
 View(PoliticasPublicas)
 
-# Grafico - Em andamento 
-
-PoliticasPublicas$Distancia <- as.numeric(PoliticasPublicas$Distancia)
+## Gráficos
 
 Politicas_MedidasPrevencao <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas) %>%
   filter(Medidas == "Medidas de Prevenção")
 
 PoliticasGrafico_MP <- plot_ly(Politicas_MedidasPrevencao, 
-                            x = Politicas_MedidasPrevencao$Municipio,
-                            y = Politicas_MedidasPrevencao$Distancia,
+                            Politicas_MedidasPrevencao$Municipio,
+                            Politicas_MedidasPrevencao$Distancia,
                             type = "bar")
+PoliticasGrafico_MP <- PoliticasGrafico_MP %>% 
+  layout(title = "Comparação dos tempos de reação à epidemia",
+                      xaxis = list(title = "Municípios"),
+                      yaxis = list(title = "Distância (em dias) até 1º caso confirmado"))
 PoliticasGrafico_MP
-
-
