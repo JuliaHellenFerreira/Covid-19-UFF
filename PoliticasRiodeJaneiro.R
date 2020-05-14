@@ -16,6 +16,7 @@ library(plotly)
 library(devtools)
 library(readxl)
 
+
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ (((((( Retirar do Site)))
 
 EventosCOVIDMunicipiosUFs <- read_excel("C:/Users/jorge/Downloads/EventosCOVIDMunicipiosUFs.xlsx")
@@ -134,34 +135,26 @@ RJ_PrimeiroCaso <- Municipios_PrimeiroCaso %>%
                           Municipio == "São Gonçalo/RJ" |
                           Municipio == "Belford Roxo/RJ")
 
-## Número de obitos 
+## Número de obitos de cada município
 
-N_Obitos <- function(x, mun){
-  linhas <- nrow(x)
-  colunas <- ncol(x)
-  obitos <- data.frame(Municipio = c(NULL),
-                       Total = c(NULL))
-  Mun <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
+N_Obitos <- function(x){
+  Munic <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
            "Mesquita/RJ", "Belford Roxo/RJ", "Volta Redonda/RJ",
            "Itaboraí/RJ", "São João de Meriti/RJ", "Duque de Caxias/RJ",
            "Nova Iguaçu/RJ")
-  for (k in 1: length(Mun)){
-    muni <- Mun[k]
-  for (i in 1:linhas){
-    total = 0
-    for (j in 1:colunas){
-      if (row.names(x) == muni)
-      total = total + x[[i]][[j]] ## Não funciona! 
-    }
-    obitos[i,1] = rownames(x)[i]
+  obitos <- data.frame(Municipio = c(NULL),
+                       Obitos = c(NULL))
+  for (i in 1:length(Munic)){
+    Muni <- Munic[i]
+    total <- sum(as.numeric(OBITOS.RJ[Muni,]))
+    obitos[i,1] <- rownames(x)[i]
+    obitos[i,2] <- total
   }
-    obitos[i,2] = total
-  }
-  colnames(obitos) <- c("Municipio", "Total_Obitos")
+  colnames(obitos)<- c("Municipios", "Obitos")
   return(obitos)
 }
 
-N_Obitos(OBITOS.RJ)
+Total_Obitos <- N_Obitos(OBITOS.RJ)
 
 ## Criando um dataframe com os casos confirmados e a data da primeira medida
 
@@ -174,11 +167,16 @@ View(PoliticasPublicas)
 
 # Grafico - Em andamento 
 
+PoliticasPublicas$Distancia <- as.numeric(PoliticasPublicas$Distancia)
+
 Politicas_MedidasPrevencao <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas) %>%
   filter(Medidas == "Medidas de Prevenção")
 
-PoliticasGrafico <- plot_ly(Politicas_MedidasPrevencao, 
-                      x = "Municipio",
-                      y = "Distancia",
-                      type = "bar")
+PoliticasGrafico_MP <- plot_ly(Politicas_MedidasPrevencao, 
+                            x = Politicas_MedidasPrevencao$Municipio,
+                            y = Politicas_MedidasPrevencao$Distancia,
+                            type = "bar")
+PoliticasGrafico_MP
+
+
