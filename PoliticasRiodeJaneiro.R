@@ -17,10 +17,12 @@ library(devtools)
 library(readxl)
 
 
-## Leitura dos Dados - Politicas Publicas nos municipios do RJ (((((( Retirar do Site)))
+## Leitura dos Dados - Politicas Publicas nos municipios do RJ 
 
-EventosCOVIDMunicipiosUFs <- read_excel("C:/Users/jorge/Downloads/EventosCOVIDMunicipiosUFs.xlsx")
-PoliticasRJ <- EventosCOVIDMunicipiosUFs
+url <- "https://github.com/JuliaHellenFerreira/Covid-19-UFF/blob/master/EventosCOVIDMunicipiosUFs.xlsx?raw=true"
+destfile <- "EventosCOVIDMunicipiosUFs.xlsx"
+curl::curl_download(url, destfile)
+PoliticasRJ <- read_excel(destfile)
 
 ## Importacao - Casos confirmados e obitos do RJ
 
@@ -166,18 +168,31 @@ PoliticasPublicas$Distancia <- (as.Date(PoliticasPublicas$Dia_Decreto) - as.Date
 PoliticasPublicas$Distancia <- as.numeric(PoliticasPublicas$Distancia)
 View(PoliticasPublicas)
 
-## Gráficos
+## Visualização dos gráficos
+
+##################################### Mensagem Interativa ############################
+
+
+
+###################################### Gráficos por medidas ##########################
 
 Politicas_MedidasPrevencao <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas) %>%
   filter(Medidas == "Medidas de Prevenção")
 
 PoliticasGrafico_MP <- plot_ly(Politicas_MedidasPrevencao, 
-                            Politicas_MedidasPrevencao$Municipio,
-                            Politicas_MedidasPrevencao$Distancia,
-                            type = "bar")
+                            x = Politicas_MedidasPrevencao$Municipio,
+                            y = Politicas_MedidasPrevencao$Distancia,
+                            type = "bar",
+                            marker = list(color = c("blue", "pink","yellow","green",
+                                                    "violetred1","orange","red","yellowgreen",
+                                                    "snow","tan1")))
 PoliticasGrafico_MP <- PoliticasGrafico_MP %>% 
   layout(title = "Comparação dos tempos de reação à epidemia",
                       xaxis = list(title = "Municípios"),
                       yaxis = list(title = "Distância (em dias) até 1º caso confirmado"))
 PoliticasGrafico_MP
+
+
+
+
