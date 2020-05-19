@@ -182,9 +182,11 @@ Munic <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
 
 ###################################### Gráficos por medidas ##########################
 
-titulo = "Comparação (em dias) até o 1º caso confirmado"
+titulo = "Respostas Políticas"
 
 ## 01 - Medidas de Prevencao:
+
+medida1 <- "- Medidas de Prevenção"
 
 Politicas_MedidasPrevencao <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas, Obitos) %>%
@@ -199,16 +201,18 @@ MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
+  ggtitle(paste(titulo, medida1)) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
-        axis.text.x =element_text(face = "bold",size=10),
+        axis.text.x =element_text(face = "bold",size = 10),
         legend.position = "none")
 
 MedidasPrevencao <- ggplotly(MedidasPrevencao,
                      tooltip = c("x", "y", "label"))
 
 ## 02 - Situacao de Emergencia:
+
+medida2 <- "- Situaçao de Emergência"
 
 Politicas_SE <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas, Obitos) %>%
@@ -223,7 +227,7 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
+  ggtitle(paste(titulo, medida2)) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size=10),
@@ -232,55 +236,11 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
 SituacaoEmegencia <- ggplotly(SituacaoEmegencia,
                             tooltip = c("x", "y", "label"))
 
-## 03 - Instalacoes Hospitalares:
 
-Politicas_IH <- PoliticasPublicas %>%
-  select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Instalações Hospitalares")
 
-InstalacoesHospitalares <- ggplot(Politicas_IH,
-                            aes(x = Municipio,
-                                y = Distancia,
-                            label = Obitos)) +
-  geom_bar(stat = "identity",
-           col = "black",
-           aes(fill = Municipio)) +
-  xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.x =element_text(face = "bold",size=10),
-        legend.position = "none")
+# 03 - Flexibilizacao de funcionamento dos comercios:
 
-InstalacoesHospitalares <- ggplotly(InstalacoesHospitalares,
-                              tooltip = c("x", "y", "label"))
-
-# 03 - Gabinete de Crise:
-
-Politicas_GC <- PoliticasPublicas %>%
-  select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Gabinete de Crise")
-
-GabineteCrise <- ggplot(Politicas_GC,
-                                  aes(x = Municipio,
-                                      y = Distancia,
-                                  label = Obitos)) +
-  geom_bar(stat = "identity",
-           col = "black",
-           aes(fill = Municipio)) +
-  xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.x =element_text(face = "bold",size=10),
-        legend.position = "none")
-
-GabineteCrise <- ggplotly(GabineteCrise,
-                          tooltip = c("x", "y", "label"))
-
-# 04 - Flexibilizacao de funcionamento dos comercios:
+medida3 <- "- Flexibilização de funcionamento dos comércios"
 
 Politicas_FC <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas, Obitos) %>%
@@ -295,7 +255,7 @@ Flexibilizacao<- ggplot(Politicas_FC,
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
+  ggtitle(paste(titulo, medida3)) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size=10),
@@ -304,13 +264,15 @@ Flexibilizacao<- ggplot(Politicas_FC,
 Flexibilizacao <- ggplotly(Flexibilizacao,
                           tooltip = c("x", "y", "label"))
 
-## 05 - Fechamento de comércio:
+## 04 - Fechamento de comércio:
+
+medida4 <- "- Fechamento de comércio"
 
 Politicas_FC <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Flexibilização de funcionamento dos comércios")
+  filter(Medidas == "Fechamento de comércio")
 
-Flexibilizacao <- ggplot(Politicas_FC,
+Comercio <- ggplot(Politicas_FC,
                         aes(x = Municipio,
                             y = Distancia,
                         label = Obitos)) +
@@ -319,46 +281,25 @@ Flexibilizacao <- ggplot(Politicas_FC,
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
+  ggtitle(paste(titulo, medida4)) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size = 10),
         legend.position = "none")
 
-Flexibilizacao <- ggplotly(Flexibilizacao,
+Comercio <- ggplotly(Comercio,
                            tooltip = c("x", "y", "label"))
 
-## 06 - Servidores em grupo de risco:
 
-Politicas_SR <- PoliticasPublicas %>%
+## 05 - Uso de Máscara:
+
+medida5 <- "- Uso de Máscara"
+
+Mascara <- PoliticasPublicas %>%
   select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Servidores em grupo de risco")
+  filter(Medidas == "Uso de Máscara")
 
-Servidores <- ggplot(Politicas_SR,
-                        aes(x = Municipio,
-                            y = Distancia,
-                        label = Obitos)) +
-  geom_bar(stat = "identity",
-           col = "black",
-           aes(fill = Municipio)) +
-  xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.x =element_text(face = "bold",size = 10),
-        legend.position = "none")
-
-Servidores <- ggplotly(Servidores,
-                           tooltip = c("x", "y", "label"))
-
-## 07 - Calamidade Pública:
-
-Politicas_CP <- PoliticasPublicas %>%
-  select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Calamidade Pública")
-
-Calamidade <- ggplot(Politicas_CP,
+Mascara <- ggplot(Mascara,
                      aes(x = Municipio,
                          y = Distancia,
                          label = Obitos)) +
@@ -367,35 +308,12 @@ Calamidade <- ggplot(Politicas_CP,
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
+  ggtitle(paste(titulo, medida5)) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size = 10),
         legend.position = "none")
 
-Calamidade <- ggplotly(Calamidade,
+Mascara <- ggplotly(Mascara,
                        tooltip = c("x", "y", "label"))
 
-## 08 - Regras de Isolamento
-
-Politicas_RI <- PoliticasPublicas %>%
-  select(Municipio, Distancia, Medidas, Obitos) %>%
-  filter(Medidas == "Regras de Isolamento")
-
-Isolamento <- ggplot(Politicas_RI,
-                     aes(x = Municipio,
-                         y = Distancia,
-                         label = Obitos)) +
-  geom_bar(stat = "identity",
-           col = "black",
-           aes(fill = Municipio)) +
-  xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
-  ggtitle(titulo) +
-  theme(axis.title.x=element_blank(),
-        axis.ticks.x=element_blank(),
-        axis.text.x =element_text(face = "bold",size = 10),
-        legend.position = "none")
-
-Isolamento <- ggplotly(Isolamento,
-                       tooltip = c("x", "y", "label"))
