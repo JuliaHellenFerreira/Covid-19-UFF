@@ -1,3 +1,4 @@
+# GET UFF contra o COVID-19
 
 # Politicas Publicas - Estado do Rio de Janeiro
 ###### Este script tem como objetivo calcular a distancia, em dias,
@@ -184,7 +185,8 @@ Obitos <- function(x){
     Muni <- Municip[[i]][1]
     Med <- Medid[[i]][1]
     Dia <- as.character.Date(Dias[[i]][1])
-    Obi <- as.numeric(OBITOS.RJ[Muni,Dia])
+    Obi <- as.character(OBITOS.RJ[Muni,Dia])
+    Obi <- as.numeric(Obi)
     ObitosRJ[i,1] <- Municip[[i]][1]
     ObitosRJ[i,2] <- Medid[[i]][1]
     ObitosRJ[i,3] <- Obi
@@ -327,3 +329,7 @@ Mascara <- ggplotly(Mascara,
                     tooltip = c("x", "y", "label", "label1"))
 
 saveRDS(MedidasPrevencao, file = "Uso de Máscara.rds")
+
+
+
+
