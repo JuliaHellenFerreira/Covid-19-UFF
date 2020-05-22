@@ -1,0 +1,50 @@
+---
+title: "Comparação dos tempos de reação"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: bootstrap
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+
+Medidas de prevenção
+===================================== 
+
+### 
+
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Medidas de Prevenção.rds")
+```
+
+Uso de Máscara
+=====================================     
+
+### 
+    
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Uso de Máscara.rds")
+```
+
+Fechamento de comércio
+=====================================     
+
+### 
+    
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Fechamento de comércio.rds")
+```
+    
+Situação de Emergência
+=====================================     
+
+### 
+    
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Situação de Emergência.rds")
+```
+
