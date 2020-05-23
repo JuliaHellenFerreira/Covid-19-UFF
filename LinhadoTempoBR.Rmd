@@ -1,0 +1,40 @@
+---
+title: "Comparação dos tempos de reação"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: bootstrap
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+
+Suspensão de eventos
+===================================== 
+
+### 
+
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Suspensão de eventos.rds")
+```
+
+Suspensão das Aulas
+=====================================     
+
+### 
+    
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Suspensão das Aulas.rds")
+```
+
+Calamidade pública
+=====================================     
+
+### 
+    
+```{r}
+readRDS("C:/Users/jorge/OneDrive/Documentos/Calamidade pública.rds")
+```
