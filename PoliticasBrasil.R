@@ -80,32 +80,89 @@ Obitos <- function(x){
     ObitosBR[i,2] <- Medid[[i]][1]
     ObitosBR[i,3] <- Obi
   }
-  colnames(ObitosBR) <- c("Estados", "Medidas", "Obitos")
+  colnames(ObitosBR) <- c("Estado", "Medidas", "Obitos")
   return(ObitosBR)
 }
 
 Total_Obitos <- Obitos(PoliticasBR) 
 PoliticasBR$`Número de óbitos` <- Total_Obitos$Obitos
 
+## Data do primeiro registro de óbitos: ##
+
+PrimeiroObito <- function(x){
+  linhas <- nrow(x)
+  colunas <- ncol(x)
+  ocor <- data.frame(Estado = c(NULL),
+                     Ocorrencia = c(NULL))
+  for (i in 1:linhas){
+    for (j in  2:colunas){
+      if (x[i,j] != 0){
+        ocor[i,1] = rownames(x)[i]
+        ocor [i,2] = colnames(x)[j]
+        break
+      }
+    }
+  }
+  colnames(ocor) <- c("Siglas", "Registro do 1º dia com óbitos")
+  return(ocor)
+}
+
+Dia_Obito <- PrimeiroObito(OBITOS.BR.UF)
+Dia_Obito <- Dia_Obito %>% 
+  select(Siglas, `Registro do 1º dia com óbitos`) %>% 
+  filter(Siglas == "SP" |
+           Siglas == "RJ" |
+           Siglas == "CE" |
+           Siglas == "PE" |
+           Siglas == "AM" |
+           Siglas == "BA" |
+           Siglas == "MA" |
+           Siglas == "MG" |
+           Siglas == "ES" |
+           Siglas == "SC" )
+
+PoliticasBR <- inner_join(PoliticasBR, Dia_Obito,
+                          by = "Siglas")
+
+
+
 ## Visualização dos gráficos ##
 
 ### Gráficos por medidas:
 
-titulo = "Respostas Políticas"
+dia = Sys.Date()
+titulo = paste("Respostas Políticas [Última atualização:",dia)
 
 # 01 - Suspensão de eventos:
 
 medida1 <- "- Suspensão de eventos"
 
 Politicas_SuspensãoEventos <- PoliticasBR %>%
-  select(Estados, Distância, Medidas,`Casos Confirmados`,`Número de óbitos`) %>%
-  filter(Medidas == "Suspensão de eventos")
+  select(Estados, Distância, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
+  filter(Medidas == "Suspensão de eventos") %>% 
+  arrange(Distância)
+
+Politicas_SuspensãoEventos$`Publicação do Decreto` <- format(Politicas_SuspensãoEventos$`Publicação do Decreto`,
+                                                             "%d/%m/%Y")
+
+Politicas_SuspensãoEventos$`1º Caso de COVID-19`<- format(Politicas_SuspensãoEventos$`1º Caso de COVID-19`,
+                                                             "%d/%m/%Y")
+
+Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- as.Date(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`)
+Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- format(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`,"%d/%m/%Y")
+
+View(Politicas_SuspensãoEventos)
 
 SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                            aes(x = Estados,
                                y = Distância,
-                               label = `Casos Confirmados`,
-                               label1 = `Número de óbitos`)) +
+                               label = `Publicação do Decreto`,
+                               label1 = `1º Caso de COVID-19`,
+                               label2 = `Casos Confirmados`,
+                               label3 = `Registro do 1º dia com óbitos`,
+                               label4 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            aes(fill = Estados)) +
@@ -118,7 +175,8 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
         legend.position = "none")
 
 SuspensãoEventos <- ggplotly(SuspensãoEventos,
-                             tooltip = c("x", "y", "label", "label1"))
+                             tooltip = c("x", "y", "label", "label1",
+                                         "label2","label3","label4"))
 
 saveRDS(SuspensãoEventos, file = "Suspensão de eventos.rds")
 
