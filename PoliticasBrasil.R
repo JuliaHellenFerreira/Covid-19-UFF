@@ -124,21 +124,30 @@ Dia_Obito <- Dia_Obito %>%
 PoliticasBR <- inner_join(PoliticasBR, Dia_Obito,
                           by = "Siglas")
 
+## Ranking dos maiores casos confirmados entre os 10 estados: ##
 
+# Suspensão de Eventos:
+
+Ranking <- PoliticasBR %>% 
+  select(Siglas, Medidas, `Casos Confirmados`) %>% 
+  arrange(`Casos Confirmados`) %>% 
+  group_by(Medidas == `Suspensão das Aulas`)
+
+
+view(Ranking)
 
 ## Visualização dos gráficos ##
 
 ### Gráficos por medidas:
 
-dia = Sys.Date()
-titulo = paste("Respostas Políticas [Última atualização:",dia)
+titulo = "Respostas Políticas"
 
 # 01 - Suspensão de eventos:
 
 medida1 <- "- Suspensão de eventos"
 
 Politicas_SuspensãoEventos <- PoliticasBR %>%
-  select(Estados, Distância, Medidas,`Publicação do Decreto`,
+  select(Estado, Distância, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
   filter(Medidas == "Suspensão de eventos") %>% 
@@ -153,10 +162,8 @@ Politicas_SuspensãoEventos$`1º Caso de COVID-19`<- format(Politicas_SuspensãoEve
 Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- as.Date(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`)
 Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- format(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`,"%d/%m/%Y")
 
-View(Politicas_SuspensãoEventos)
-
 SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
-                           aes(x = Estados,
+                           aes(x = Estado,
                                y = Distância,
                                label = `Publicação do Decreto`,
                                label1 = `1º Caso de COVID-19`,
@@ -165,7 +172,7 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                                label4 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           aes(fill = Estados)) +
+           aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
   ggtitle(paste(titulo, medida1)) +
@@ -189,13 +196,13 @@ Politicas_SuspensãoAulas <- PoliticasBR %>%
   filter(Medidas == "Suspensão das Aulas")
 
 SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
-                           aes(x = Estados,
+                           aes(x = Estado,
                                y = Distância,
                                label = `Casos Confirmados`,
                                label1 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           aes(fill = Estados)) +
+           aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
   ggtitle(paste(titulo, medida2)) +
@@ -214,7 +221,7 @@ saveRDS(SuspensãoAulas, file = "Suspensão das Aulas.rds")
 medida3 <- "- Calamidade pública"
 
 Politicas_Calamidadepública <- PoliticasBR %>%
-  select(Estados, Distância, Medidas,`Casos Confirmados`,`Número de óbitos`) %>%
+  select(Estado, Distância, Medidas,`Casos Confirmados`,`Número de óbitos`) %>%
   filter(Medidas == "Calamidade pública")
 
 Calamidadepública <- ggplot(Politicas_Calamidadepública,
@@ -224,7 +231,7 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
                              label1 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           aes(fill = Estados)) +
+           aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
   ggtitle(paste(titulo, medida3)) +
