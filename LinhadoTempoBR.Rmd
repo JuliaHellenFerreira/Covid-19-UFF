@@ -15,14 +15,30 @@ library(flexdashboard)
 source("PoliticasBrasil.R") ## Leitura do script PoliticasBrasil
 ```
 
+### 
+
+Suspensão de eventos
+=====================================     
+
+### 
+
 ```{r}
 readRDS("Suspensão de eventos.rds") ## Gráfico: Suspensão de eventos
 ```
+
+Suspensão de Aulas
+=====================================     
+
+### 
 
 ```{r}
 readRDS("Suspensão das Aulas.rds") ## Gráfico: Suspensão de Aulas
 ```
 
+Calamidade pública
+=====================================     
+
+### 
 ```{r}
 readRDS("Calamidade pública.rds") ## Gráfico: Calamidade pública
 ```
