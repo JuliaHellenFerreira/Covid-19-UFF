@@ -1,5 +1,5 @@
 ---
-title: "Comparação dos tempos de reação"
+title: "Comparação dos tempos de reação - Última Atualização: 27/05/2020"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
@@ -11,30 +11,19 @@ output:
 library(flexdashboard)
 ```
 
-
-Suspensão de eventos
-===================================== 
-
-### 
-
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Suspensão de eventos.rds")
+source("PoliticasBrasil.R") ## Leitura do script PoliticasBrasil
 ```
 
-Suspensão das Aulas
-=====================================     
-
-### 
-    
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Suspensão das Aulas.rds")
+readRDS("Suspensão de eventos.rds") ## Gráfico: Suspensão de eventos
 ```
 
-Calamidade pública
-=====================================     
-
-### 
-    
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Calamidade pública.rds")
+readRDS("Suspensão das Aulas.rds") ## Gráfico: Suspensão de Aulas
 ```
+
+```{r}
+readRDS("Calamidade pública.rds") ## Gráfico: Calamidade pública
+```
+
