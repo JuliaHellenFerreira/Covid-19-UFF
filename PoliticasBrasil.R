@@ -124,20 +124,7 @@ Dia_Obito <- Dia_Obito %>%
 PoliticasBR <- inner_join(PoliticasBR, Dia_Obito,
                           by = "Siglas")
 
-## Ranking dos maiores casos confirmados entre os 10 estados: ##
-
-# Suspensão de Eventos:
-
-Ranking <- PoliticasBR %>% 
-  select(Siglas, Medidas, `Casos Confirmados`) %>% 
-  arrange(`Casos Confirmados`) %>% 
-  group_by(Medidas == `Suspensão das Aulas`)
-
-
-view(Ranking)
-
 ## Visualização dos gráficos ##
-
 ### Gráficos por medidas:
 
 titulo = "Respostas Políticas"
@@ -150,17 +137,18 @@ Politicas_SuspensãoEventos <- PoliticasBR %>%
   select(Estado, Distância, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
-  filter(Medidas == "Suspensão de eventos") %>% 
-  arrange(Distância)
+  filter(Medidas == "Suspensão de eventos")
 
 Politicas_SuspensãoEventos$`Publicação do Decreto` <- format(Politicas_SuspensãoEventos$`Publicação do Decreto`,
-                                                             "%d/%m/%Y")
+                                                               "%d/%m/%Y")
 
 Politicas_SuspensãoEventos$`1º Caso de COVID-19`<- format(Politicas_SuspensãoEventos$`1º Caso de COVID-19`,
-                                                             "%d/%m/%Y")
+                                                          "%d/%m/%Y")
 
 Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- as.Date(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`)
-Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- format(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`,"%d/%m/%Y")
+Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- format(Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos`,
+                                                                     "%d/%m/%Y")
+
 
 SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                            aes(x = Estado,
@@ -192,14 +180,29 @@ saveRDS(SuspensãoEventos, file = "Suspensão de eventos.rds")
 medida2 <- "- Suspensão das Aulas"
 
 Politicas_SuspensãoAulas <- PoliticasBR %>%
-  select(Estados, Distância, Medidas,`Casos Confirmados`,`Número de óbitos`) %>%
+  select(Estado, Distância, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
   filter(Medidas == "Suspensão das Aulas")
+
+Politicas_SuspensãoAulas$`Publicação do Decreto` <- format(Politicas_SuspensãoAulas$`Publicação do Decreto`,
+                                                             "%d/%m/%Y")
+
+Politicas_SuspensãoAulas$`1º Caso de COVID-19`<- format(Politicas_SuspensãoAulas$`1º Caso de COVID-19`,
+                                                          "%d/%m/%Y")
+
+Politicas_SuspensãoAulas$`Registro do 1º dia com óbitos` <- as.Date(Politicas_SuspensãoAulas$`Registro do 1º dia com óbitos`)
+Politicas_SuspensãoAulas$`Registro do 1º dia com óbitos` <- format(Politicas_SuspensãoAulas$`Registro do 1º dia com óbitos`,
+                                                                     "%d/%m/%Y")
 
 SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                            aes(x = Estado,
                                y = Distância,
-                               label = `Casos Confirmados`,
-                               label1 = `Número de óbitos`)) +
+                               label = `Publicação do Decreto`,
+                               label1 = `1º Caso de COVID-19`,
+                               label2 = `Casos Confirmados`,
+                               label3 = `Registro do 1º dia com óbitos`,
+                               label4 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            aes(fill = Estado)) +
@@ -212,7 +215,8 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
         legend.position = "none")
 
 SuspensãoAulas <- ggplotly(SuspensãoAulas,
-                             tooltip = c("x", "y", "label", "label1"))
+                             tooltip = c("x", "y", "label", "label1",
+                                         "label2","label3","label4"))
 
 saveRDS(SuspensãoAulas, file = "Suspensão das Aulas.rds")
 
@@ -221,14 +225,30 @@ saveRDS(SuspensãoAulas, file = "Suspensão das Aulas.rds")
 medida3 <- "- Calamidade pública"
 
 Politicas_Calamidadepública <- PoliticasBR %>%
-  select(Estado, Distância, Medidas,`Casos Confirmados`,`Número de óbitos`) %>%
+  select(Estado, Distância, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
   filter(Medidas == "Calamidade pública")
+  
+Politicas_Calamidadepública$`Publicação do Decreto` <- format(Politicas_Calamidadepública$`Publicação do Decreto`,
+                                                           "%d/%m/%Y")
+
+Politicas_Calamidadepública$`1º Caso de COVID-19`<- format(Politicas_Calamidadepública$`1º Caso de COVID-19`,
+                                                        "%d/%m/%Y")
+
+Politicas_Calamidadepública$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Calamidadepública$`Registro do 1º dia com óbitos`)
+Politicas_Calamidadepública$`Registro do 1º dia com óbitos` <- format(Politicas_Calamidadepública$`Registro do 1º dia com óbitos`,
+                                                                   "%d/%m/%Y")
+
 
 Calamidadepública <- ggplot(Politicas_Calamidadepública,
-                         aes(x = Estados,
-                             y = Distância,
-                             label = `Casos Confirmados`,
-                             label1 = `Número de óbitos`)) +
+                           aes(x = Estado,
+                               y = Distância,
+                               label = `Publicação do Decreto`,
+                               label1 = `1º Caso de COVID-19`,
+                               label2 = `Casos Confirmados`,
+                               label3 = `Registro do 1º dia com óbitos`,
+                               label4 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            aes(fill = Estado)) +
@@ -241,6 +261,7 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
         legend.position = "none")
 
 Calamidadepública <- ggplotly(Calamidadepública,
-                           tooltip = c("x", "y", "label", "label1"))
+                           tooltip = c("x", "y", "label", "label1",
+                                       "label2","label3","label4"))
 
 saveRDS(Calamidadepública, file = "Calamidade pública.rds")
