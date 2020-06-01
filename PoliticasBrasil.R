@@ -1,6 +1,11 @@
-### Politicas Publicas - Brasil
+# GET UFF contra o COVID-19
 
-## Pacotes
+# Politicas Publicas - Brasil
+###### Este script tem como objetivo calcular a distancia, em dias,
+###### do primeiro caso confirmado ate um determinado decreto de 
+###### cada estado do Brasil.
+
+## Pacotes ##
 
 pacotes <- c("magrittr","knitr","dplyr", "lubridate","shiny","plotly","devtools", "readxl")
 for(pacote in pacotes){
@@ -17,7 +22,7 @@ library(devtools)
 library(readxl)
 library(ggplot2)
 
-## Leitura dos Dados - Politicas Publicas nos municipios do RJ 
+## Leitura dos Dados - Politicas Publicas nos municipios do RJ ##
 
 url <- "https://github.com/JuliaHellenFerreira/Covid-19-UFF/blob/master/RespostasPoliticasBrasil.xlsx?raw=true"
 destfile <- "EventosCOVIDMunicipiosUFs.xlsx"
@@ -244,7 +249,11 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           col = "black",
+           fill = c("royalblue", "violetred",
+                   "mistyrose", "yellowgreen",
+                   "red3", "coral2",
+                   "wheat", "khaki2",
+                   "grey73", "cyan3") ,
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
@@ -254,11 +263,23 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
         axis.text.x =element_text(face = "bold",size = 10),
         legend.position = "none")
 
+
 # Tornando o gráfico interativo:
 
 SuspensãoEventos <- ggplotly(SuspensãoEventos,
                              tooltip = c("x", "y","label", "label1",
                                          "label2","label3","label4", "label5"))
+# Colocando a logo:
+
+#install.packages("PNG")
+#library(png)
+
+#img <- readPNG("logo_get_uff_covid.png")
+#SuspensãoEventos <- annotation_custom(rasterGrob(img),
+#                  xmin= min(casosMUNDO_final_As$data) + 2,
+#                  xmax = min(casosMUNDO_final_As$data) + 30,
+#                    ymin= ymin_as,
+#                    ymax= ymax_as)
 
 # Salvando gráfico:
 
@@ -308,7 +329,11 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           col = "black",
+           fill = c("royalblue", "violetred", 
+                   "red3","mistyrose",
+                   "yellowgreen","coral2",
+                   "wheat", "khaki2",
+                   "grey73", "cyan3"),
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
@@ -372,7 +397,11 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           col = "black",
+           fill = c("royalblue", "violetred", 
+                    "coral2","mistyrose",
+                   "yellowgreen","khaki2",
+                   "wheat","red3",
+                   "cyan3","grey73"),
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
