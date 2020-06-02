@@ -7,7 +7,8 @@
 
 ## Pacotes ##
 
-pacotes <- c("magrittr","knitr","dplyr", "lubridate","shiny","plotly","devtools", "readxl")
+pacotes <- c("magrittr","knitr","gridGraphics","png","dplyr",
+             "lubridate","shiny","plotly","devtools", "readxl")
 for(pacote in pacotes){
   if(!is.element(pacote,installed.packages())){install.packages(pacote)}
 }
@@ -21,6 +22,9 @@ library(plotly)
 library(devtools)
 library(readxl)
 library(ggplot2)
+library(png)
+library(png)
+library(gridGraphics)
 
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ ##
 
@@ -249,11 +253,11 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           fill = c("royalblue", "violetred",
-                   "mistyrose", "yellowgreen",
-                   "red3", "coral2",
-                   "wheat", "khaki2",
-                   "grey73", "cyan3") ,
+           fill = c("seagreen","peru",
+                    "seashell4","royalblue2",
+                    "orange1","rosybrown1",
+                    "mediumaquamarine","tomato",
+                    "maroon", "yellowgreen") ,
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
@@ -261,8 +265,12 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size = 10),
-        legend.position = "none")
-
+        legend.position = "none") +
+  annotation_custom(rasterGrob(img),
+                    xmin= 0,
+                    xmax = 6,
+                    ymin= 11,
+                    ymax= 15)
 
 # Tornando o gráfico interativo:
 
@@ -271,15 +279,17 @@ SuspensãoEventos <- ggplotly(SuspensãoEventos,
                                          "label2","label3","label4", "label5"))
 # Colocando a logo:
 
-#install.packages("PNG")
-#library(png)
+install.packages("png")
+library(png)
+install.packages("gridGraphics")
+library(gridGraphics)
 
-#img <- readPNG("logo_get_uff_covid.png")
-#SuspensãoEventos <- annotation_custom(rasterGrob(img),
-#                  xmin= min(casosMUNDO_final_As$data) + 2,
-#                  xmax = min(casosMUNDO_final_As$data) + 30,
-#                    ymin= ymin_as,
-#                    ymax= ymax_as)
+img <- readPNG("logo_get_uff_covid.png")
+SuspensãoEventos <- annotation_custom(rasterGrob(img),
+                                      xmin= 10,
+                                      xmax = 20,
+                                      ymin= 10,
+                                      ymax= 20)
 
 # Salvando gráfico:
 
@@ -329,11 +339,11 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           fill = c("royalblue", "violetred", 
-                   "red3","mistyrose",
-                   "yellowgreen","coral2",
-                   "wheat", "khaki2",
-                   "grey73", "cyan3"),
+           fill = c("seagreen","peru",
+                    "orange1","seashell4",
+                    "royalblue2","rosybrown1",
+                    "mediumaquamarine","tomato",
+                    "maroon", "yellowgreen"),
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
@@ -397,11 +407,11 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
-           fill = c("royalblue", "violetred", 
-                    "coral2","mistyrose",
-                   "yellowgreen","khaki2",
-                   "wheat","red3",
-                   "cyan3","grey73"),
+           fill = c("seagreen","peru",
+                    "rosybrown1","seashell4",
+                    "royalblue2","tomato",
+                    "mediumaquamarine","orange1",
+                    "yellowgreen","maroon"),
            aes(fill = Estado)) +
   xlab("") +
   ylab("Distância (em dias) até o 1º caso confirmado") +
