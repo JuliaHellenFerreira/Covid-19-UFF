@@ -23,7 +23,6 @@ library(devtools)
 library(readxl)
 library(ggplot2)
 library(png)
-library(png)
 library(gridGraphics)
 
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ ##
@@ -253,6 +252,7 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
+           col = "black",
            fill = c("seagreen","peru",
                     "seashell4","royalblue2",
                     "orange1","rosybrown1",
@@ -265,31 +265,13 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
         axis.text.x =element_text(face = "bold",size = 10),
-        legend.position = "none") +
-  annotation_custom(rasterGrob(img),
-                    xmin= 0,
-                    xmax = 6,
-                    ymin= 11,
-                    ymax= 15)
+        legend.position = "none")
 
 # Tornando o gráfico interativo:
 
 SuspensãoEventos <- ggplotly(SuspensãoEventos,
                              tooltip = c("x", "y","label", "label1",
                                          "label2","label3","label4", "label5"))
-# Colocando a logo:
-
-install.packages("png")
-library(png)
-install.packages("gridGraphics")
-library(gridGraphics)
-
-img <- readPNG("logo_get_uff_covid.png")
-SuspensãoEventos <- annotation_custom(rasterGrob(img),
-                                      xmin= 10,
-                                      xmax = 20,
-                                      ymin= 10,
-                                      ymax= 20)
 
 # Salvando gráfico:
 
@@ -339,6 +321,7 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
+           col = "black",
            fill = c("seagreen","peru",
                     "orange1","seashell4",
                     "royalblue2","rosybrown1",
@@ -407,6 +390,7 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
                                label4 = `Registro do 1º dia com óbitos`,
                                label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
+           col = "black",
            fill = c("seagreen","peru",
                     "rosybrown1","seashell4",
                     "royalblue2","tomato",
