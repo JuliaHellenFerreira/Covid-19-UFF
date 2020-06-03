@@ -8,7 +8,8 @@
 
 ## Pacotes ##
 
-pacotes <- c("magrittr","knitr","tidyr","dplyr", "lubridate","shiny","plotly","devtools", "readxl")
+pacotes <- c("magrittr","knitr","tidyr","dplyr", "lubridate","plotly",
+             "devtools", "readxl", "stringr")
 for(pacote in pacotes){
   if(!is.element(pacote,installed.packages())){install.packages(pacote)}
 }
@@ -17,12 +18,12 @@ library(lubridate)
 library(magrittr)
 library(knitr)
 library(dplyr)
-library(shiny)
 library(plotly)
 library(devtools)
 library(readxl)
 library(ggplot2)
 library(tidyr)
+library(stringr)
 
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ ##
 
@@ -402,6 +403,10 @@ Rank <- as.data.frame(paste0(rep(1:10,4),"º"))
 colnames(Rank) <- "Rank"
 PoliticasPublicas$`Rank` <- Rank$Rank
 
+# Retirando o "/RJ" dos nomes:
+
+PoliticasPublicas$Município <-  str_sub(PoliticasPublicas$Município, end = -4)
+
 ## Visualização dos gráficos ##
 ### Gráficos por medidas:
 
@@ -484,6 +489,7 @@ Politicas_SE <- PoliticasPublicas %>%
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
   filter(Medidas == "Situação de Emergência")
+Politicas_SE$Município[8] <- "Duque de Caxias"
 
 # Colocando no formato data:
 
@@ -523,7 +529,7 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
                                 label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seashell4","rosybrown1",
+           fill = c("seagreen","peru",
                     "orange1","peru",
                     "royalblue2","seagreen",
                     "mediumaquamarine","tomato",
@@ -594,7 +600,7 @@ Comercio <- ggplot(Politicas_FC,
            col = "black",
            fill = c("seagreen","rosybrown1",
                     "peru","seashell4",
-                    "orange1","royalblue2",
+                    "orange1","seagreen",
                     "mediumaquamarine","tomato",
                     "maroon", "yellowgreen"),
            aes(fill = Municipio)) +
@@ -661,9 +667,9 @@ Mascara <- ggplot(Mascara,
                       label5 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seagreen","peru",
+           fill = c("seashell4","rosybrown1",
                     "orange1","seashell4",
-                    "royalblue2","rosybrown1",
+                    "orange1","seagreen",
                     "mediumaquamarine","tomato",
                     "maroon", "yellowgreen"),
            aes(fill = Municipio)) +
