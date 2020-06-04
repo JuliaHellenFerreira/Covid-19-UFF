@@ -1,5 +1,5 @@
 ---
-title: "Comparação dos tempos de reação"
+title: "Comparação dos tempos de reação - Última Atualização: 04/06/2020"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
@@ -7,10 +7,15 @@ output:
     vertical_layout: fill
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 library(flexdashboard)
 ```
 
+```{r}
+source("PoliticasRiodeJaneiro.R") ## Leitura do script PoliticasBrasil
+```
+
+### 
 
 Medidas de prevenção
 ===================================== 
@@ -18,16 +23,16 @@ Medidas de prevenção
 ### 
 
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Medidas de Prevenção.rds")
+readRDS("Medidas de Prevenção.rds")
 ```
 
-Uso de Máscara
+Situação de Emergência
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Uso de Máscara.rds")
+readRDS("Situação de Emergência.rds")
 ```
 
 Fechamento de comércio
@@ -36,15 +41,17 @@ Fechamento de comércio
 ### 
     
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Fechamento de comércio.rds")
+readRDS("Fechamento de comércio.rds")
 ```
-    
-Situação de Emergência
+
+Uso de Máscara
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("C:/Users/jorge/OneDrive/Documentos/Situação de Emergência.rds")
+readRDS("Uso de Máscara.rds")
 ```
+
+
 

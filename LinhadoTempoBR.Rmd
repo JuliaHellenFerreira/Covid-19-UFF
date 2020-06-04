@@ -1,5 +1,5 @@
 ---
-title: "Comparação dos tempos de reação - Última Atualização: 27/05/2020"
+title: "Comparação dos tempos de reação - Última Atualização: 04/06/2020"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
@@ -7,7 +7,8 @@ output:
     vertical_layout: fill
 ---
 
-```{r setup, include=FALSE}
+
+```{r setup, include = FALSE}
 library(flexdashboard)
 ```
 
