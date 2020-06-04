@@ -240,8 +240,8 @@ PoliticasPublicas <- inner_join(PoliticasPublicas, Dia_Obito,
 
 # Distancia (em dias) ate o primeiro caso confirmado:
 
-PoliticasPublicas$Distância <- (as.Date(PoliticasPublicas$`Publicação do Decreto`) - as.Date(PoliticasPublicas$`1º Caso de COVID-19`))
-PoliticasPublicas$Distância <- as.numeric(PoliticasPublicas$Distância)
+PoliticasPublicas$Distância0 <- (as.Date(PoliticasPublicas$`Publicação do Decreto`) - as.Date(PoliticasPublicas$`1º Caso de COVID-19`))
+PoliticasPublicas$Distância0 <- as.numeric(PoliticasPublicas$Distância0)
 
 ## Ranking:
 
@@ -266,7 +266,7 @@ for (i in 1: linhas){
     Prevenção[j,5] <- v$`Casos Confirmados`[i]
     Prevenção[j,6] <- v$`Registro do 1º dia com óbitos`[i]
     Prevenção[j,7] <- v$`Número de óbitos`[i]
-    Prevenção[j,8] <- v$Distância[i]
+    Prevenção[j,8] <- v$Distância0[i]
     j = j + 1
   }
   if (v$Medidas[i] == "Situação de Emergência"){
@@ -277,7 +277,7 @@ for (i in 1: linhas){
     Emergência[l,5] <- v$`Casos Confirmados`[i]
     Emergência[l,6] <- v$`Registro do 1º dia com óbitos`[i]
     Emergência[l,7] <- v$`Número de óbitos`[i]
-    Emergência[l,8] <- v$Distância[i]
+    Emergência[l,8] <- v$Distância0[i]
     l = l + 1
   }
   if (v$Medidas[i] == "Fechamento de comércio"){
@@ -288,7 +288,7 @@ for (i in 1: linhas){
     Comércio[m,5] <- v$`Casos Confirmados`[i]
     Comércio[m,6] <- v$`Registro do 1º dia com óbitos`[i]
     Comércio[m,7] <- v$`Número de óbitos`[i]
-    Comércio[m,8] <- v$Distância[i]
+    Comércio[m,8] <- v$Distância0[i]
     m = m + 1
   }
   if (v$Medidas[i] == "Uso de Máscara"){
@@ -299,7 +299,7 @@ for (i in 1: linhas){
     Máscara[u,5] <- v$`Casos Confirmados`[i]
     Máscara[u,6] <- v$`Registro do 1º dia com óbitos`[i]
     Máscara[u,7] <- v$`Número de óbitos`[i]
-    Máscara[u,8] <- v$Distância[i]
+    Máscara[u,8] <- v$Distância0[i]
     u = u + 1
   }
   else{
@@ -316,7 +316,7 @@ Politicas = as.data.frame(Politicas)
 colnames(Politicas) <- c("Município", "Publicação do Decreto",
                          "Medidas", "1º Caso de COVID-19","Casos Confirmados",
                          "Registro do 1º dia com óbitos", "Número de óbitos",
-                         "Distância")
+                         "Distância0")
 return(Politicas) 
 
 }
@@ -324,7 +324,7 @@ return(Politicas)
 ## Acrescentando linhas de municípios que não publicaram decretos:
 
 PoliticasPublicas <- PoliticasPublicas %>%
-  select(Município, Distância, Medidas,`Publicação do Decreto`,
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
   filter(Medidas == "Medidas de Prevenção" | 
@@ -415,7 +415,7 @@ titulo = "Respostas Políticas"
 ######################### 01 - Medidas de Prevencao: ###############
 
 Politicas_MedidasPrevencao <- PoliticasPublicas %>%
-  select(Município, Distância, Medidas,`Publicação do Decreto`,
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
   filter(Medidas == "Medidas de Prevenção")
@@ -436,7 +436,7 @@ Politicas_MedidasPrevencao$`Registro do 1º dia com óbitos` <- format(Politicas_M
 # Reclassificando para colocar em ordem crescente:
 
 Politicas_MedidasPrevencao = arrange(Politicas_MedidasPrevencao,
-                                     Distância)
+                                     Distância0)
 
 Politicas_MedidasPrevencao <- Politicas_MedidasPrevencao %>% 
   mutate_all(replace_na, 0)
@@ -444,19 +444,22 @@ Politicas_MedidasPrevencao <- Politicas_MedidasPrevencao %>%
 Politicas_MedidasPrevencao$Município = factor(Politicas_MedidasPrevencao$Município,
                                               levels = Politicas_MedidasPrevencao$Município)
 
-Politicas_MedidasPrevencao$Distância = as.integer(Politicas_MedidasPrevencao$Distância)
+Politicas_MedidasPrevencao$Distância0 = as.integer(Politicas_MedidasPrevencao$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_MedidasPrevencao$Distância = as.character(Politicas_MedidasPrevencao[,2])
+
 MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
                            aes(x = Município,
-                               y = Distância,
-                               label = Rank,
-                               label1 = `Publicação do Decreto`,
-                               label2 = `1º Caso de COVID-19`,
-                               label3 = `Casos Confirmados`,
-                               label4 = `Registro do 1º dia com óbitos`,
-                               label5 = `Número de óbitos`)) +
+                               y = Distância0,
+                               label = Distância,
+                               label1 = Rank,
+                               label2 = `Publicação do Decreto`,
+                               label3 = `1º Caso de COVID-19`,
+                               label4 = `Casos Confirmados`,
+                               label5 = `Registro do 1º dia com óbitos`,
+                               label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","peru",
@@ -466,7 +469,7 @@ MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
                    "maroon", "yellowgreen"),
            aes(fill = Município)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -476,8 +479,9 @@ MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
 # Tornando o gráfico interativo:
 
 MedidasPrevencao <- ggplotly(MedidasPrevencao,
-                             tooltip = c("x", "y","label", "label1",
-                                         "label2","label3","label4", "label5"))
+                             tooltip = c("x","label", "label1",
+                                         "label2","label3","label4",
+                                         "label5", "label6"))
 # Salvando gráfico:
 
 saveRDS(MedidasPrevencao, file = "Medidas de Prevenção.rds")
@@ -485,7 +489,7 @@ saveRDS(MedidasPrevencao, file = "Medidas de Prevenção.rds")
 ####################### 02 - Situacao de Emergencia: ###################
 
 Politicas_SE <- PoliticasPublicas %>%
-  select(Município, Distância, Medidas,`Publicação do Decreto`,
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
   filter(Medidas == "Situação de Emergência")
@@ -506,7 +510,7 @@ Politicas_SE$`Registro do 1º dia com óbitos` <- format(Politicas_SE$`Registro do
 
 # Reclassificando para colocar em ordem crescente:
 
-Politicas_SE = arrange(Politicas_SE, Distância)
+Politicas_SE = arrange(Politicas_SE, Distância0)
 
 Politicas_SE <- Politicas_SE %>% 
   mutate_all(replace_na, 0)
@@ -514,19 +518,22 @@ Politicas_SE <- Politicas_SE %>%
 Politicas_SE$Município = factor(Politicas_SE$Município,
                                 levels = Politicas_SE$Município)
 
-Politicas_SE$Distância = as.integer(Politicas_SE$Distância)
+Politicas_SE$Distância0 = as.integer(Politicas_SE$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_SE$Distância = as.character(Politicas_SE[,2])
+
 SituacaoEmegencia <- ggplot(Politicas_SE,
                             aes(x = Município,
-                                y = Distância,
-                                label = Rank,
-                                label1 = `Publicação do Decreto`,
-                                label2 = `1º Caso de COVID-19`,
-                                label3 = `Casos Confirmados`,
-                                label4 = `Registro do 1º dia com óbitos`,
-                                label5 = `Número de óbitos`)) +
+                                y = Distância0,
+                                label = Distância,
+                                label1 = Rank,
+                                label2 = `Publicação do Decreto`,
+                                label3 = `1º Caso de COVID-19`,
+                                label4 = `Casos Confirmados`,
+                                label5 = `Registro do 1º dia com óbitos`,
+                                label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","peru",
@@ -536,7 +543,7 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
                     "maroon", "yellowgreen"),
            aes(fill = Município)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -546,8 +553,9 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
 # Tornando o gráfico interativo:
 
 SituacaoEmegencia <- ggplotly(SituacaoEmegencia,
-                              tooltip = c("x", "y","label", "label1",
-                                          "label2","label3","label4", "label5"))
+                              tooltip = c("x","label", "label1",
+                                          "label2","label3","label4",
+                                          "label5", "label6"))
 # Salvando gráfico:
 
 saveRDS(SituacaoEmegencia, file = "Situação de Emergência.rds")
@@ -555,7 +563,7 @@ saveRDS(SituacaoEmegencia, file = "Situação de Emergência.rds")
 ######################### 03 - Fechamento de comércio: ################
 
 Politicas_FC <- PoliticasPublicas %>%
-  select(Município, Distância, Medidas,`Publicação do Decreto`,
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
   filter(Medidas == "Fechamento de comércio")
@@ -575,7 +583,7 @@ Politicas_FC$`Registro do 1º dia com óbitos` <- format(Politicas_FC$`Registro do
 
 # Reclassificando para colocar em ordem crescente:
 
-Politicas_FC = arrange(Politicas_FC, Distância)
+Politicas_FC = arrange(Politicas_FC, Distância0)
 
 Politicas_FC <- Politicas_FC %>% 
   mutate_all(replace_na, 0)
@@ -583,19 +591,22 @@ Politicas_FC <- Politicas_FC %>%
 Politicas_FC$Município = factor(Politicas_FC$Município,
                                 levels = Politicas_FC$Município)
 
-Politicas_FC$Distância = as.integer(Politicas_FC$Distância)
+Politicas_FC$Distância0 = as.integer(Politicas_FC$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_FC$Distância = as.character(Politicas_FC[,2])
+
 Comercio <- ggplot(Politicas_FC,
                    aes(x = Município,
-                       y = Distância,
-                       label = Rank,
-                       label1 = `Publicação do Decreto`,
-                       label2 = `1º Caso de COVID-19`,
-                       label3 = `Casos Confirmados`,
-                       label4 = `Registro do 1º dia com óbitos`,
-                       label5 = `Número de óbitos`)) +
+                       y = Distância0,
+                       label = Distância,
+                       label1 = Rank,
+                       label2 = `Publicação do Decreto`,
+                       label3 = `1º Caso de COVID-19`,
+                       label4 = `Casos Confirmados`,
+                       label5 = `Registro do 1º dia com óbitos`,
+                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","rosybrown1",
@@ -605,7 +616,7 @@ Comercio <- ggplot(Politicas_FC,
                     "maroon", "yellowgreen"),
            aes(fill = Municipio)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -615,8 +626,9 @@ Comercio <- ggplot(Politicas_FC,
 # Tornando o gráfico interativo:
 
 Comercio <- ggplotly(Comercio,
-                     tooltip = c("x", "y","label", "label1",
-                                 "label2","label3","label4", "label5"))
+                     tooltip = c("x","label", "label1",
+                                 "label2","label3","label4",
+                                 "label5","label6"))
 # Salvando gráfico:
 
 saveRDS(Comercio, file = "Fechamento de comércio.rds")
@@ -624,7 +636,7 @@ saveRDS(Comercio, file = "Fechamento de comércio.rds")
 ########################### 04 - Uso de Máscara: ########################
 
 Mascara <- PoliticasPublicas %>%
-  select(Município, Distância, Medidas,`Publicação do Decreto`,
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
   filter(Medidas == "Uso de Máscara")
@@ -644,7 +656,7 @@ Mascara$`Registro do 1º dia com óbitos` <- format(Mascara$`Registro do 1º dia co
 
 # Reclassificando para colocar em ordem crescente:
 
-Mascara = arrange(Mascara, Distância)
+Mascara = arrange(Mascara, Distância0)
 
 Mascara <- Mascara %>% 
   mutate_all(replace_na, 0)
@@ -652,19 +664,22 @@ Mascara <- Mascara %>%
 Mascara$Município = factor(Mascara$Município,
                                 levels = Mascara$Município)
 
-Mascara$Distância = as.integer(Mascara$Distância)
+Mascara$Distância0 = as.integer(Mascara$Distância0)
 
 # Gráfico no ggplot:
 
+Mascara$Distância = as.character(Mascara[,2])
+
 Mascara <- ggplot(Mascara,
                   aes(x = Município,
-                      y = Distância,
-                      label = Rank,
-                      label1 = `Publicação do Decreto`,
-                      label2 = `1º Caso de COVID-19`,
-                      label3 = `Casos Confirmados`,
-                      label4 = `Registro do 1º dia com óbitos`,
-                      label5 = `Número de óbitos`)) +
+                      y = Distância0,
+                      label = Distância,
+                      label1 = Rank,
+                      label2 = `Publicação do Decreto`,
+                      label3 = `1º Caso de COVID-19`,
+                      label4 = `Casos Confirmados`,
+                      label5 = `Registro do 1º dia com óbitos`,
+                      label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seashell4","rosybrown1",
@@ -674,7 +689,7 @@ Mascara <- ggplot(Mascara,
                     "maroon", "yellowgreen"),
            aes(fill = Municipio)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -684,8 +699,9 @@ Mascara <- ggplot(Mascara,
 # Tornando o gráfico interativo:
 
 Mascara <- ggplotly(Mascara,
-                    tooltip = c("x", "y","label", "label1",
-                                "label2","label3","label4", "label5"))
+                    tooltip = c("x","label", "label1",
+                                "label2","label3","label4",
+                                "label5", "label6"))
 # Salvando gráfico:
 
 saveRDS(Mascara, file = "Uso de Máscara.rds")

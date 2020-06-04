@@ -42,8 +42,8 @@ GET.UFF.READ(c("CASOS.CONFIRMADOS.BR.UF.R","OBITOS.BR.UF.R"))
                
 ## Distância ( em dias ) até 1° caso confirmado :
 
-PoliticasBR$`Distância` <- (as.Date(PoliticasBR$`Publicação do Decreto`) - as.Date(PoliticasBR$`1º Caso de COVID-19`))
-PoliticasBR$Distância <- as.numeric(PoliticasBR$Distância)
+PoliticasBR$Distância0 <- (as.Date(PoliticasBR$`Publicação do Decreto`) - as.Date(PoliticasBR$`1º Caso de COVID-19`))
+PoliticasBR$Distância0 <- as.numeric(PoliticasBR$Distância0)
 
 # Numero de casos confirmados ate o dia do decreto:
 
@@ -154,7 +154,7 @@ Posicao <- function(v){
       Eventos[j,6] <- v$`Casos Confirmados`[i]
       Eventos[j,7] <- v$`Registro do 1º dia com óbitos`[i]
       Eventos[j,8] <- v$`Número de óbitos`[i]
-      Eventos[j,9] <- v$Distância[i]
+      Eventos[j,9] <- v$Distância0[i]
       j = j + 1
     }
     if (v$Medidas[i] == "Suspensão das Aulas"){
@@ -166,7 +166,7 @@ Posicao <- function(v){
       Aulas[l,6] <- v$`Casos Confirmados`[i]
       Aulas[l,7] <- v$`Registro do 1º dia com óbitos`[i]
       Aulas[l,8] <- v$`Número de óbitos`[i]
-      Aulas[l,9] <- v$Distância[i]
+      Aulas[l,9] <- v$Distância0[i]
       l = l + 1
     }
     if (v$Medidas[i] == "Calamidade pública"){
@@ -178,7 +178,7 @@ Posicao <- function(v){
       Calamidade[m,6] <- v$`Casos Confirmados`[i]
       Calamidade[m,7] <- v$`Registro do 1º dia com óbitos`[i]
       Calamidade[m,8] <- v$`Número de óbitos`[i]
-      Calamidade[m,9] <- v$Distância[i]
+      Calamidade[m,9] <- v$Distância0[i]
       m = m + 1
     }
     else{
@@ -194,7 +194,7 @@ Posicao <- function(v){
   colnames(Politicas) <- c("Siglas", "Estado", "Publicação do Decreto",
                    "Medidas", "1º Caso de COVID-19","Casos Confirmados",
                    "Registro do 1º dia com óbitos", "Número de óbitos",
-                   "Distância")
+                   "Distância0")
   return(Politicas)
 }
 
@@ -213,7 +213,7 @@ titulo = "Respostas Políticas"
 # Organizando por medida:
 
 Politicas_SuspensãoEventos <- PoliticasBR %>%
-  select(Estado, Distância, Medidas,`Publicação do Decreto`,
+  select(Estado, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`,
          Rank) %>%
@@ -233,24 +233,27 @@ Politicas_SuspensãoEventos$`Registro do 1º dia com óbitos` <- format(Politicas_S
 # Reclassificando para colocar em ordem crescente:
 
 Politicas_SuspensãoEventos = arrange(Politicas_SuspensãoEventos,
-                                     Distância)
+                                     Distância0)
 
 Politicas_SuspensãoEventos$Estado = factor(Politicas_SuspensãoEventos$Estado,
                                            levels = Politicas_SuspensãoEventos$Estado)
 
-Politicas_SuspensãoEventos$Distância = as.integer(Politicas_SuspensãoEventos$Distância)
+Politicas_SuspensãoEventos$Distância0 = as.integer(Politicas_SuspensãoEventos$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_SuspensãoEventos$Distância = as.character(Politicas_SuspensãoEventos[,2])
+
 SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                            aes(x = Estado,
-                               y = Distância,
-                               label = Rank,
-                               label1 = `Publicação do Decreto`,
-                               label2 = `1º Caso de COVID-19`,
-                               label3 = `Casos Confirmados`,
-                               label4 = `Registro do 1º dia com óbitos`,
-                               label5 = `Número de óbitos`)) +
+                               y = Distância0,
+                               label = Distância,
+                               label1 = Rank,
+                               label2 = `Publicação do Decreto`,
+                               label3 = `1º Caso de COVID-19`,
+                               label4 = `Casos Confirmados`,
+                               label5 = `Registro do 1º dia com óbitos`,
+                               label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","peru",
@@ -260,7 +263,7 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
                     "maroon", "yellowgreen") ,
            aes(fill = Estado)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -270,8 +273,9 @@ SuspensãoEventos <- ggplot(Politicas_SuspensãoEventos,
 # Tornando o gráfico interativo:
 
 SuspensãoEventos <- ggplotly(SuspensãoEventos,
-                             tooltip = c("x", "y","label", "label1",
-                                         "label2","label3","label4", "label5"))
+                             tooltip = c("x","label", "label1",
+                                         "label2","label3","label4",
+                                         "label5", "label6"))
 
 # Salvando gráfico:
 
@@ -282,7 +286,7 @@ saveRDS(SuspensãoEventos, file = "Suspensão de eventos.rds")
 # Organizando por medida:
 
 Politicas_SuspensãoAulas <- PoliticasBR %>%
-  select(Estado, Distância, Medidas,`Publicação do Decreto`,
+  select(Estado, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`,
          Rank) %>%
@@ -302,24 +306,27 @@ Politicas_SuspensãoAulas$`Registro do 1º dia com óbitos` <- format(Politicas_Sus
 # Reclassificando para colocar em ordem crescente:
 
 Politicas_SuspensãoAulas = arrange(Politicas_SuspensãoAulas,
-                                     Distância) 
+                                     Distância0) 
 
 Politicas_SuspensãoAulas$Estado = factor(Politicas_SuspensãoAulas$Estado,
                                            levels = Politicas_SuspensãoAulas$Estado)
 
-Politicas_SuspensãoAulas$Distância = as.integer(Politicas_SuspensãoAulas$Distância)
+Politicas_SuspensãoAulas$Distância0 = as.integer(Politicas_SuspensãoAulas$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_SuspensãoAulas$Distância = as.character(Politicas_SuspensãoAulas[,2])
+
 SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                            aes(x = Estado,
-                               y = Distância,
-                               label = Rank,
-                               label1 = `Publicação do Decreto`,
-                               label2 = `1º Caso de COVID-19`,
-                               label3 = `Casos Confirmados`,
-                               label4 = `Registro do 1º dia com óbitos`,
-                               label5 = `Número de óbitos`)) +
+                               y = Distância0,
+                               label = Distância,
+                               label1 = Rank,
+                               label2 = `Publicação do Decreto`,
+                               label3 = `1º Caso de COVID-19`,
+                               label4 = `Casos Confirmados`,
+                               label5 = `Registro do 1º dia com óbitos`,
+                               label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","peru",
@@ -329,7 +336,7 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
                     "maroon", "yellowgreen"),
            aes(fill = Estado)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -339,8 +346,9 @@ SuspensãoAulas <- ggplot(Politicas_SuspensãoAulas,
 # Tornando o gráfico interativo:
 
 SuspensãoAulas <- ggplotly(SuspensãoAulas,
-                             tooltip = c("x", "y", "label", "label1",
-                                         "label2","label3","label4", "label5"))
+                             tooltip = c("x", "label", "label1",
+                                         "label2","label3","label4",
+                                         "label5", "label6"))
 
 # Salvando gráfico:
 
@@ -351,7 +359,7 @@ saveRDS(SuspensãoAulas, file = "Suspensão das Aulas.rds")
 # Organizando por medida:
 
 Politicas_Calamidadepública <- PoliticasBR %>%
-  select(Estado, Distância, Medidas,`Publicação do Decreto`,
+  select(Estado, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`,
          Rank) %>%
@@ -371,24 +379,27 @@ Politicas_Calamidadepública$`Registro do 1º dia com óbitos` <- format(Politicas_
 # Reclassificando para colocar em ordem crescente:
 
 Politicas_Calamidadepública = arrange(Politicas_Calamidadepública,
-                                   Distância) 
+                                   Distância0) 
 
 Politicas_Calamidadepública$Estado = factor(Politicas_Calamidadepública$Estado,
                                          levels = Politicas_Calamidadepública$Estado)
 
-Politicas_Calamidadepública$Distância = as.integer(Politicas_Calamidadepública$Distância)
+Politicas_Calamidadepública$Distância0 = as.numeric(Politicas_Calamidadepública$Distância0)
 
 # Gráfico no ggplot:
 
+Politicas_Calamidadepública$Distância = as.character(Politicas_Calamidadepública[,2])
+
 Calamidadepública <- ggplot(Politicas_Calamidadepública,
                            aes(x = Estado,
-                               y = Distância,
-                               label = Rank,
-                               label1 = `Publicação do Decreto`,
-                               label2= `1º Caso de COVID-19`,
-                               label3 = `Casos Confirmados`,
-                               label4 = `Registro do 1º dia com óbitos`,
-                               label5 = `Número de óbitos`)) +
+                               y = Distância0,
+                               label = Distância,
+                               label1 = Rank,
+                               label2 = `Publicação do Decreto`,
+                               label3= `1º Caso de COVID-19`,
+                               label4 = `Casos Confirmados`,
+                               label5 = `Registro do 1º dia com óbitos`,
+                               label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
            fill = c("seagreen","peru",
@@ -398,7 +409,7 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
                     "yellowgreen","maroon"),
            aes(fill = Estado)) +
   xlab("") +
-  ylab("Distância (em dias) até o 1º caso confirmado") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
   ggtitle(titulo) +
   theme(axis.title.x=element_blank(),
         axis.ticks.x=element_blank(),
@@ -408,8 +419,9 @@ Calamidadepública <- ggplot(Politicas_Calamidadepública,
 # Tornando o gráfico interativo:
 
 Calamidadepública <- ggplotly(Calamidadepública,
-                           tooltip = c("x", "y", "label", "label1",
-                                       "label2","label3","label4", "label5"))
+                           tooltip = c("x", "label", "label1",
+                                       "label2","label3","label4",
+                                       "label5", "label6"))
 # Salvando gráfico:
 
 saveRDS(Calamidadepública, file = "Calamidade pública.rds")
