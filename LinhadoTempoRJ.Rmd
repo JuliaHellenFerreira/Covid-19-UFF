@@ -1,5 +1,5 @@
 ---
-title: "Comparação dos tempos de reação - Última Atualização: 04/06/2020"
+title: "Comparação dos tempos de reação - Última Atualização: 29/06/2020"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
@@ -17,41 +17,76 @@ source("PoliticasRiodeJaneiro.R") ## Leitura do script PoliticasBrasil
 
 ### 
 
-Medidas de prevenção
+Trabalho
 ===================================== 
 
 ### 
 
 ```{r}
-readRDS("Medidas de Prevenção.rds")
+readRDS("Trabalho.rds")
 ```
 
-Situação de Emergência
+Prevenção
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("Situação de Emergência.rds")
+readRDS("Prevenção.rds")
 ```
 
-Fechamento de comércio
+Equipamento de Proteção
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("Fechamento de comércio.rds")
+readRDS("Equipamento.rds")
 ```
 
-Uso de Máscara
+Isolamento Social
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("Uso de Máscara.rds")
+readRDS("Isolamento.rds")
 ```
 
+Hospital
+===================================== 
+
+### 
+
+```{r}
+readRDS("Hospital.rds")
+```
+
+Economia
+=====================================     
+
+### 
+    
+```{r}
+readRDS("Economia.rds")
+```
+
+Flexibilização
+=====================================     
+
+### 
+    
+```{r}
+readRDS("Flexibilização.rds")
+```
+
+Emergência de Saúde Pública
+=====================================     
+
+### 
+    
+```{r}
+readRDS("Emergência.rds")
+```
 
 

@@ -9,7 +9,7 @@
 ## Pacotes ##
 
 pacotes <- c("magrittr","knitr","tidyr","dplyr", "lubridate","plotly",
-             "devtools", "readxl", "stringr")
+             "devtools", "readxl", "stringr", "magick")
 for(pacote in pacotes){
   if(!is.element(pacote,installed.packages())){install.packages(pacote)}
 }
@@ -24,6 +24,8 @@ library(readxl)
 library(ggplot2)
 library(tidyr)
 library(stringr)
+library(magick)
+
 
 ## Leitura dos Dados - Politicas Publicas nos municipios do RJ ##
 
@@ -63,17 +65,12 @@ Medidas <- PoliticasRJ %>%
 # Funcao para separar por medidas:
 
 PrimeiraMedida <- function(x){
-  Med <- c("Instalações Hospitalares", "Medidas de Prevenção",
-           "Gabinete de Crise", "Situação de Emergência",
-           "Flexibilização de funcionamento dos comércios", 
-           "Fechamento de comércio", "Servidores em grupo de risco",
-           "Calamidade Pública", "Funcionamento do transporte",
-           "Regras de Isolamento", "Funcionamento de supermercados",
-           "Disk Aglomeração", "Cestas Básica",
-           "Circulação de Acesso", "Suspensão de aulas",
-           "Auxílio Emergencial", "Uso de Máscara",
-           "Fundo de Crédito Emergencial", "Fechamento de feiras livres",
-           "Procedimentos em funerárias")
+  Med <- c("Trabalho", "Educação", "Transporte", "Prevenção",
+          "Equipamento de Proteção", "Cultura", "Isolamento Social",
+          "Hospital", "Economia", "Flexibilização", "Profissional da Saúde",
+          "Comunicação", "Emergência de Saúde Pública", "Declaração de Calamidade Pública",
+          "Estado de Emergência", "Comércio", "Outros"
+           )
   Mun <- c("Rio de Janeiro/RJ", "Niterói/RJ", "São Gonçalo/RJ",
            "Mesquita/RJ", "Belford Roxo/RJ", "Volta Redonda/RJ",
            "Itaboraí/RJ", "São João de Meriti/RJ", "Duque de Caxias/RJ",
@@ -243,163 +240,186 @@ PoliticasPublicas <- inner_join(PoliticasPublicas, Dia_Obito,
 PoliticasPublicas$Distância0 <- (as.Date(PoliticasPublicas$`Publicação do Decreto`) - as.Date(PoliticasPublicas$`1º Caso de COVID-19`))
 PoliticasPublicas$Distância0 <- as.numeric(PoliticasPublicas$Distância0)
 
-## Ranking:
-
-Posicao <- function(v){
-linhas <- nrow(v)
-Prevenção <- data.frame(NULL)
-Emergência <- data.frame(NULL)
-Comércio <- data.frame(NULL)
-Máscara <- data.frame(NULL)
-nada <-  as.vector(NULL)
-j = 1
-l = 1
-m = 1
-u = 1
-e = 1
-for (i in 1: linhas){
-  if(v$Medidas[i] == "Medidas de Prevenção"){
-    Prevenção[j,1] <- v$Município[i]
-    Prevenção[j,2] <- v$`Publicação do Decreto`[i]
-    Prevenção[j,3] <- v$Medidas[i]
-    Prevenção[j,4] <- v$`1º Caso de COVID-19`[i]
-    Prevenção[j,5] <- v$`Casos Confirmados`[i]
-    Prevenção[j,6] <- v$`Registro do 1º dia com óbitos`[i]
-    Prevenção[j,7] <- v$`Número de óbitos`[i]
-    Prevenção[j,8] <- v$Distância0[i]
-    j = j + 1
-  }
-  if (v$Medidas[i] == "Situação de Emergência"){
-    Emergência[l,1] <- v$Município[i]
-    Emergência[l,2] <- v$`Publicação do Decreto`[i]
-    Emergência[l,3] <- v$Medidas[i]
-    Emergência[l,4] <- v$`1º Caso de COVID-19`[i]
-    Emergência[l,5] <- v$`Casos Confirmados`[i]
-    Emergência[l,6] <- v$`Registro do 1º dia com óbitos`[i]
-    Emergência[l,7] <- v$`Número de óbitos`[i]
-    Emergência[l,8] <- v$Distância0[i]
-    l = l + 1
-  }
-  if (v$Medidas[i] == "Fechamento de comércio"){
-    Comércio[m,1] <- v$Município[i]
-    Comércio[m,2] <- v$`Publicação do Decreto`[i]
-    Comércio[m,3] <- v$Medidas[i]
-    Comércio[m,4] <- v$`1º Caso de COVID-19`[i]
-    Comércio[m,5] <- v$`Casos Confirmados`[i]
-    Comércio[m,6] <- v$`Registro do 1º dia com óbitos`[i]
-    Comércio[m,7] <- v$`Número de óbitos`[i]
-    Comércio[m,8] <- v$Distância0[i]
-    m = m + 1
-  }
-  if (v$Medidas[i] == "Uso de Máscara"){
-    Máscara[u,1] <- v$Município[i]
-    Máscara[u,2] <- v$`Publicação do Decreto`[i]
-    Máscara[u,3] <- v$Medidas[i]
-    Máscara[u,4] <- v$`1º Caso de COVID-19`[i]
-    Máscara[u,5] <- v$`Casos Confirmados`[i]
-    Máscara[u,6] <- v$`Registro do 1º dia com óbitos`[i]
-    Máscara[u,7] <- v$`Número de óbitos`[i]
-    Máscara[u,8] <- v$Distância0[i]
-    u = u + 1
-  }
-  else{
-    nada[e] <- v$`Casos Confirmados`[i]
-    e = e + 1
-  }
-}
-Prevenção = Prevenção %>% arrange(V8)
-Emergência = Emergência %>% arrange(V8)
-Comércio = Comércio %>% arrange(V8)
-Máscara = Máscara %>% arrange(V8)
-Politicas <- bind_rows(Prevenção, Emergência, Comércio, Máscara)
-Politicas = as.data.frame(Politicas)
-colnames(Politicas) <- c("Município", "Publicação do Decreto",
-                         "Medidas", "1º Caso de COVID-19","Casos Confirmados",
-                         "Registro do 1º dia com óbitos", "Número de óbitos",
-                         "Distância0")
-return(Politicas) 
-
-}
-
 ## Acrescentando linhas de municípios que não publicaram decretos:
 
 PoliticasPublicas <- PoliticasPublicas %>%
   select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`) %>%
-  filter(Medidas == "Medidas de Prevenção" | 
-        Medidas == "Situação de Emergência" |
-        Medidas == "Fechamento de comércio" |
-        Medidas == "Uso de Máscara")
+  filter(Medidas == "Trabalho" | 
+        Medidas == "Prevenção" |
+        Medidas == "Equipamento de Proteção" |
+        Medidas == "Isolamento Social" |
+        Medidas == "Hospital" | 
+        Medidas == "Economia" |
+        Medidas == "Flexibilização" |
+        Medidas == "Emergência de Saúde Pública"
+        )
 
-# Medidas de Prevenção:
-
-PoliticasPublicas[nrow(PoliticasPublicas) + 5, "Município"] <- ""
-PoliticasPublicas[17,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[17,3] <-"Medidas de Prevenção"
-PoliticasPublicas[18,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[18,3] <-"Medidas de Prevenção"
-PoliticasPublicas[19,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[19,3] <-"Medidas de Prevenção"
-PoliticasPublicas[20,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[20,3] <-"Medidas de Prevenção"
-PoliticasPublicas[21,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[21,3] <-"Medidas de Prevenção"
-
-# Situação de Emergência
-
-PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
-PoliticasPublicas[22,1] <-"Volta Redonda/RJ"
-PoliticasPublicas[22,3] <-"Situação de Emergência"
-PoliticasPublicas[23,1] <-"Rio de Janeiro/RJ"
-PoliticasPublicas[23,3] <-"Situação de Emergência"
-PoliticasPublicas[24,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[24,3] <-"Situação de Emergência"
-PoliticasPublicas[25,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[25,3] <-"Situação de Emergência"
-PoliticasPublicas[26,1] <-"Duque de Caxias/RJJ"
-PoliticasPublicas[26,3] <-"Situação de Emergência"
-PoliticasPublicas[27,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[27,3] <-"Situação de Emergência"
-PoliticasPublicas[28,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[28,3] <-"Situação de Emergência"
-
-# Fechamento de comércio:
+# Trabalho:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 5, "Município"] <- ""
-PoliticasPublicas[29,1] <-"Rio de Janeiro/RJ"
-PoliticasPublicas[29,3] <-"Fechamento de comércio"
-PoliticasPublicas[30,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[30,3] <-"Fechamento de comércio"
-PoliticasPublicas[31,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[31,3] <-"Fechamento de comércio"
-PoliticasPublicas[32,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[32,3] <-"Fechamento de comércio"
-PoliticasPublicas[33,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[33,3] <-"Fechamento de comércio"
+PoliticasPublicas[38,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[38,3] <-"Trabalho"
+PoliticasPublicas[39,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[39,3] <-"Trabalho"
+PoliticasPublicas[40,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[40,3] <-"Trabalho"
+PoliticasPublicas[41,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[41,3] <-"Trabalho"
+PoliticasPublicas[42,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[42,3] <-"Trabalho"
 
-# Uso de Máscara:
+# Prevenção:
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 3, "Município"] <- ""
+PoliticasPublicas[43,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[43,3] <-"Prevenção"
+PoliticasPublicas[44,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[44,3] <-"Prevenção"
+PoliticasPublicas[45,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[45,3] <-"Prevenção"
+
+# Equipamento de Proteção:
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 6, "Município"] <- ""
+PoliticasPublicas[46,1] <-"Itaboraí/RJ"
+PoliticasPublicas[46,3] <-"Equipamento de Proteção"
+PoliticasPublicas[47,1] <-"Mesquita/RJ"
+PoliticasPublicas[47,3] <-"Equipamento de Proteção"
+PoliticasPublicas[48,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[48,3] <-"Equipamento de Proteção"
+PoliticasPublicas[49,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[49,3] <-"Equipamento de Proteção"
+PoliticasPublicas[50,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[50,3] <-"Equipamento de Proteção"
+PoliticasPublicas[51,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[51,3] <-"Equipamento de Proteção"
+
+# Isolamento Social:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
-PoliticasPublicas[34,1] <-"Itaboraí/RJ"
-PoliticasPublicas[34,3] <-"Uso de Máscara"
-PoliticasPublicas[35,1] <-"Rio de Janeiro/RJ"
-PoliticasPublicas[35,3] <-"Uso de Máscara"
-PoliticasPublicas[36,1] <-"Mesquita/RJ"
-PoliticasPublicas[36,3] <-"Uso de Máscara"
-PoliticasPublicas[37,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[37,3] <-"Uso de Máscara"
-PoliticasPublicas[38,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[38,3] <-"Uso de Máscara"
-PoliticasPublicas[39,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[39,3] <-"Uso de Máscara"
-PoliticasPublicas[40,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[40,3] <-"Uso de Máscara"
+PoliticasPublicas[52,1] <-"Itaboraí/RJ"
+PoliticasPublicas[52,3] <-"Isolamento Social"
+PoliticasPublicas[53,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[53,3] <-"Isolamento Social"
+PoliticasPublicas[54,1] <-"Mesquita/RJ"
+PoliticasPublicas[54,3] <-"Isolamento Social"
+PoliticasPublicas[55,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[55,3] <-"Isolamento Social"
+PoliticasPublicas[56,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[56,3] <-"Isolamento Social"
+PoliticasPublicas[57,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[57,3] <-"Isolamento Social"
+PoliticasPublicas[58,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[58,3] <-"Isolamento Social"
 
-# Acrescentando o rank no data.frame:
+# Hospital:
 
-PoliticasPublicas <- Posicao(PoliticasPublicas)
-Rank <- as.data.frame(paste0(rep(1:10,4),"º"))
+PoliticasPublicas[nrow(PoliticasPublicas) + 6, "Município"] <- ""
+PoliticasPublicas[59,1] <-"Itaboraí/RJ"
+PoliticasPublicas[59,3] <-"Hospital"
+PoliticasPublicas[60,1] <-"São João de Merti/RJ"
+PoliticasPublicas[60,3] <-"Hospital"
+PoliticasPublicas[61,1] <-"Mesquita/RJ"
+PoliticasPublicas[61,3] <-"Hospital"
+PoliticasPublicas[62,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[62,3] <-"Hospital"
+PoliticasPublicas[63,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[63,3] <-"Hospital"
+PoliticasPublicas[64,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[64,3] <-"Hospital"
+
+# Economia:
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 5, "Município"] <- ""
+PoliticasPublicas[65,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[65,3] <-"Economia"
+PoliticasPublicas[66,1] <-"Mesquita/RJ"
+PoliticasPublicas[66,3] <-"Economia"
+PoliticasPublicas[67,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[67,3] <-"Economia"
+PoliticasPublicas[68,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[68,3] <-"Economia"
+PoliticasPublicas[69,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[69,3] <-"Economia"
+
+# Flexibilização:
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
+PoliticasPublicas[70,1] <-"Itaboraí/RJ"
+PoliticasPublicas[70,3] <-"Flexibilização"
+PoliticasPublicas[71,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[71,3] <-"Flexibilização"
+PoliticasPublicas[72,1] <-"Mesquita/RJ"
+PoliticasPublicas[72,3] <-"Flexibilização"
+PoliticasPublicas[73,1] <-"Nova iguaçu/RJ"
+PoliticasPublicas[73,3] <-"Flexibilização"
+PoliticasPublicas[74,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[74,3] <-"Flexibilização"
+PoliticasPublicas[75,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[75,3] <-"Flexibilização"
+PoliticasPublicas[76,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[76,3] <-"Flexibilização"
+
+# Emergência de Saúde Pública
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 4, "Município"] <- ""
+PoliticasPublicas[77,1] <-"Volta Redonda/RJ"
+PoliticasPublicas[77,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[78,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[78,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[79,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[79,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[80,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[80,3] <-"Emergência de Saúde Pública"
+
+# Ranking:
+
+Trabalho <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Trabalho") %>% 
+  arrange(Distância0)
+
+Prevenção <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Prevenção") %>% 
+  arrange(Distância0)
+
+Equipamento <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Equipamento de Proteção") %>% 
+  arrange(Distância0)
+
+Isolamento <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Isolamento Social") %>% 
+  arrange(Distância0)
+
+Hospital <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Hospital") %>% 
+  arrange(Distância0)
+
+Economia <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Economia") %>% 
+  arrange(Distância0)
+
+Flexibilização <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Flexibilização") %>% 
+  arrange(Distância0)
+
+Emergência <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Emergência de Saúde Pública") %>% 
+  arrange(Distância0)
+
+PoliticasPublicas <- bind_rows(Trabalho, Prevenção, Equipamento, Isolamento, 
+                       Hospital, Economia, Flexibilização, Emergência)
+
+Rank <- as.data.frame(paste0(rep(1:10,8),"º"))
 colnames(Rank) <- "Rank"
 PoliticasPublicas$`Rank` <- Rank$Rank
 
@@ -412,45 +432,48 @@ PoliticasPublicas$Município <-  str_sub(PoliticasPublicas$Município, end = -4)
 
 titulo = "Respostas Políticas"
 
-######################### 01 - Medidas de Prevencao: ###############
+image <- image_fill(image_read("logo_get_uff_covid.png"), 'none')
+raster <- as.raster(image)
 
-Politicas_MedidasPrevencao <- PoliticasPublicas %>%
+########################### 01 - Trabalho ################################
+
+Politicas_Trabalho <- PoliticasPublicas %>%
   select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
-  filter(Medidas == "Medidas de Prevenção")
+  filter(Medidas == "Trabalho")
 
 # Colocando no formato data:
 
-Politicas_MedidasPrevencao$`Publicação do Decreto` <- format(Politicas_MedidasPrevencao$`Publicação do Decreto`,
+Politicas_Trabalho$`Publicação do Decreto` <- format(Politicas_Trabalho$`Publicação do Decreto`,
                                                              "%d/%m/%Y")
 
-Politicas_MedidasPrevencao$`1º Caso de COVID-19`<- as.Date(Politicas_MedidasPrevencao$`1º Caso de COVID-19`)
-Politicas_MedidasPrevencao$`1º Caso de COVID-19`<- format(Politicas_MedidasPrevencao$`1º Caso de COVID-19`,
+Politicas_Trabalho$`1º Caso de COVID-19`<- as.Date(Politicas_Trabalho$`1º Caso de COVID-19`)
+Politicas_Trabalho$`1º Caso de COVID-19`<- format(Politicas_Trabalho$`1º Caso de COVID-19`,
                                                           "%d/%m/%Y")
 
-Politicas_MedidasPrevencao$`Registro do 1º dia com óbitos` <- as.Date(Politicas_MedidasPrevencao$`Registro do 1º dia com óbitos`)
-Politicas_MedidasPrevencao$`Registro do 1º dia com óbitos` <- format(Politicas_MedidasPrevencao$`Registro do 1º dia com óbitos`,
+Politicas_Trabalho$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Trabalho$`Registro do 1º dia com óbitos`)
+Politicas_Trabalho$`Registro do 1º dia com óbitos` <- format(Politicas_Trabalho$`Registro do 1º dia com óbitos`,
                                                                      "%d/%m/%Y")
 
 # Reclassificando para colocar em ordem crescente:
 
-Politicas_MedidasPrevencao = arrange(Politicas_MedidasPrevencao,
+Politicas_Trabalho = arrange(Politicas_Trabalho,
                                      Distância0)
 
-Politicas_MedidasPrevencao <- Politicas_MedidasPrevencao %>% 
+Politicas_Trabalho <- Politicas_Trabalho %>% 
   mutate_all(replace_na, 0)
 
-Politicas_MedidasPrevencao$Município = factor(Politicas_MedidasPrevencao$Município,
-                                              levels = Politicas_MedidasPrevencao$Município)
+Politicas_Trabalho$Município = factor(Politicas_Trabalho$Município,
+                                              levels = Politicas_Trabalho$Município)
 
-Politicas_MedidasPrevencao$Distância0 = as.integer(Politicas_MedidasPrevencao$Distância0)
+Politicas_Trabalho$Distância0 = as.integer(Politicas_Trabalho$Distância0)
 
 # Gráfico no ggplot:
 
-Politicas_MedidasPrevencao$Distância = as.character(Politicas_MedidasPrevencao[,2])
+Politicas_Trabalho$Distância = as.character(Politicas_Trabalho[,2])
 
-MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
+Trabalho <- ggplot(Politicas_Trabalho,
                            aes(x = Município,
                                y = Distância0,
                                label = Distância,
@@ -478,53 +501,67 @@ MedidasPrevencao <- ggplot(Politicas_MedidasPrevencao,
 
 # Tornando o gráfico interativo:
 
-MedidasPrevencao <- ggplotly(MedidasPrevencao,
+Trabalho <- ggplotly(Trabalho,
                              tooltip = c("x","label", "label1",
                                          "label2","label3","label4",
                                          "label5", "label6"))
+# Acrescentando LOGO:
+
+Trabalho <- Trabalho %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
 # Salvando gráfico:
 
-saveRDS(MedidasPrevencao, file = "Medidas de Prevenção.rds")
+saveRDS(Trabalho, file = "Trabalho.rds")
 
-####################### 02 - Situacao de Emergencia: ###################
+############################ 02 - Prevenção ##############################
 
-Politicas_SE <- PoliticasPublicas %>%
+Politicas_Prevenção <- PoliticasPublicas %>%
   select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
-  filter(Medidas == "Situação de Emergência")
-Politicas_SE$Município[8] <- "Duque de Caxias"
+  filter(Medidas == "Prevenção")
 
 # Colocando no formato data:
 
-Politicas_SE$`Publicação do Decreto` <- format(Politicas_SE$`Publicação do Decreto`,
+Politicas_Prevenção$`Publicação do Decreto` <- format(Politicas_Prevenção$`Publicação do Decreto`,
                                               "%d/%m/%Y")
 
-Politicas_SE$`1º Caso de COVID-19`<- as.Date(Politicas_SE$`1º Caso de COVID-19`)
-Politicas_SE$`1º Caso de COVID-19`<- format(Politicas_SE$`1º Caso de COVID-19`,
+Politicas_Prevenção$`1º Caso de COVID-19`<- as.Date(Politicas_Prevenção$`1º Caso de COVID-19`)
+Politicas_Prevenção$`1º Caso de COVID-19`<- format(Politicas_Prevenção$`1º Caso de COVID-19`,
                                             "%d/%m/%Y")
 
-Politicas_SE$`Registro do 1º dia com óbitos` <- as.Date(Politicas_SE$`Registro do 1º dia com óbitos`)
-Politicas_SE$`Registro do 1º dia com óbitos` <- format(Politicas_SE$`Registro do 1º dia com óbitos`,
+Politicas_Prevenção$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Prevenção$`Registro do 1º dia com óbitos`)
+Politicas_Prevenção$`Registro do 1º dia com óbitos` <- format(Politicas_Prevenção$`Registro do 1º dia com óbitos`,
                                                                      "%d/%m/%Y")
 
 # Reclassificando para colocar em ordem crescente:
 
-Politicas_SE = arrange(Politicas_SE, Distância0)
+Politicas_Prevenção = arrange(Politicas_Prevenção, Distância0)
 
-Politicas_SE <- Politicas_SE %>% 
+Politicas_Prevenção <- Politicas_Prevenção %>% 
   mutate_all(replace_na, 0)
 
-Politicas_SE$Município = factor(Politicas_SE$Município,
-                                levels = Politicas_SE$Município)
+Politicas_Prevenção$Município = factor(Politicas_Prevenção$Município,
+                                levels = Politicas_Prevenção$Município)
 
-Politicas_SE$Distância0 = as.integer(Politicas_SE$Distância0)
+Politicas_Prevenção$Distância0 = as.integer(Politicas_Prevenção$Distância0)
 
 # Gráfico no ggplot:
 
-Politicas_SE$Distância = as.character(Politicas_SE[,2])
+Politicas_Prevenção$Distância = as.character(Politicas_Prevenção[,2])
 
-SituacaoEmegencia <- ggplot(Politicas_SE,
+Prevenção <- ggplot(Politicas_Prevenção,
                             aes(x = Município,
                                 y = Distância0,
                                 label = Distância,
@@ -536,10 +573,10 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
                                 label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seagreen","peru",
-                    "orange1","peru",
-                    "royalblue2","seagreen",
-                    "mediumaquamarine","tomato",
+           fill = c("royalblue2", "maroon",
+                    "seagreen", "peru",
+                    "seashell4", "orange1",
+                    "rosybrown1","tomato",
                     "maroon", "yellowgreen"),
            aes(fill = Município)) +
   xlab("") +
@@ -552,52 +589,67 @@ SituacaoEmegencia <- ggplot(Politicas_SE,
 
 # Tornando o gráfico interativo:
 
-SituacaoEmegencia <- ggplotly(SituacaoEmegencia,
+Prevenção <- ggplotly(Prevenção,
                               tooltip = c("x","label", "label1",
                                           "label2","label3","label4",
                                           "label5", "label6"))
+# Acrescentando LOGO:
+
+Prevenção <- Prevenção %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
 # Salvando gráfico:
 
-saveRDS(SituacaoEmegencia, file = "Situação de Emergência.rds")
+saveRDS(Prevenção, file = "Prevenção.rds")
 
-######################### 03 - Fechamento de comércio: ################
+######################### 03 - Equipamento de Proteção ###################
 
-Politicas_FC <- PoliticasPublicas %>%
+Politicas_Equipamento <- PoliticasPublicas %>%
   select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
-  filter(Medidas == "Fechamento de comércio")
+  filter(Medidas == "Equipamento de Proteção")
 
 # Colocando no formato data:
 
-Politicas_FC$`Publicação do Decreto` <- format(Politicas_FC$`Publicação do Decreto`,
+Politicas_Equipamento$`Publicação do Decreto` <- format(Politicas_Equipamento$`Publicação do Decreto`,
                                                "%d/%m/%Y")
 
-Politicas_FC$`1º Caso de COVID-19`<- as.Date(Politicas_FC$`1º Caso de COVID-19`)
-Politicas_FC$`1º Caso de COVID-19`<- format(Politicas_FC$`1º Caso de COVID-19`,
+Politicas_Equipamento$`1º Caso de COVID-19`<- as.Date(Politicas_Equipamento$`1º Caso de COVID-19`)
+Politicas_Equipamento$`1º Caso de COVID-19`<- format(Politicas_Equipamento$`1º Caso de COVID-19`,
                                             "%d/%m/%Y")
 
-Politicas_FC$`Registro do 1º dia com óbitos` <- as.Date(Politicas_FC$`Registro do 1º dia com óbitos`)
-Politicas_FC$`Registro do 1º dia com óbitos` <- format(Politicas_FC$`Registro do 1º dia com óbitos`,
+Politicas_Equipamento$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Equipamento$`Registro do 1º dia com óbitos`)
+Politicas_Equipamento$`Registro do 1º dia com óbitos` <- format(Politicas_Equipamento$`Registro do 1º dia com óbitos`,
                                                        "%d/%m/%Y")
 
 # Reclassificando para colocar em ordem crescente:
 
-Politicas_FC = arrange(Politicas_FC, Distância0)
+Politicas_Equipamento = arrange(Politicas_Equipamento, Distância0)
 
-Politicas_FC <- Politicas_FC %>% 
+Politicas_Equipamento <- Politicas_Equipamento %>% 
   mutate_all(replace_na, 0)
 
-Politicas_FC$Município = factor(Politicas_FC$Município,
-                                levels = Politicas_FC$Município)
+Politicas_Equipamento$Município = factor(Politicas_Equipamento$Município,
+                                levels = Politicas_Equipamento$Município)
 
-Politicas_FC$Distância0 = as.integer(Politicas_FC$Distância0)
+Politicas_Equipamento$Distância0 = as.integer(Politicas_Equipamento$Distância0)
 
 # Gráfico no ggplot:
 
-Politicas_FC$Distância = as.character(Politicas_FC[,2])
+Politicas_Equipamento$Distância = as.character(Politicas_Equipamento[,2])
 
-Comercio <- ggplot(Politicas_FC,
+Equipamento <- ggplot(Politicas_Equipamento,
                    aes(x = Município,
                        y = Distância0,
                        label = Distância,
@@ -609,8 +661,8 @@ Comercio <- ggplot(Politicas_FC,
                        label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seagreen","rosybrown1",
-                    "peru","seashell4",
+           fill = c("peru", "rosybrown1",
+                    "orange1", "seashell4",
                     "orange1","seagreen",
                     "mediumaquamarine","tomato",
                     "maroon", "yellowgreen"),
@@ -625,52 +677,68 @@ Comercio <- ggplot(Politicas_FC,
 
 # Tornando o gráfico interativo:
 
-Comercio <- ggplotly(Comercio,
+Equipamento <- ggplotly(Equipamento,
                      tooltip = c("x","label", "label1",
                                  "label2","label3","label4",
                                  "label5","label6"))
+# Acrescentando LOGO:
+
+Equipamento <- Equipamento %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+
 # Salvando gráfico:
 
-saveRDS(Comercio, file = "Fechamento de comércio.rds")
+saveRDS(Equipamento, file = "Equipamento.rds")
 
-########################### 04 - Uso de Máscara: ########################
+########################### 04 - Isolamento Social ########################
 
-Mascara <- PoliticasPublicas %>%
+Politicas_Isolamento <- PoliticasPublicas %>%
   select(Município, Distância0, Medidas,`Publicação do Decreto`,
          `1º Caso de COVID-19`,`Casos Confirmados`,
          `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
-  filter(Medidas == "Uso de Máscara")
+  filter(Medidas == "Isolamento Social")
 
 # Colocando no formato data:
 
-Mascara$`Publicação do Decreto` <- format(Mascara$`Publicação do Decreto`,
+Politicas_Isolamento$`Publicação do Decreto` <- format(Politicas_Isolamento$`Publicação do Decreto`,
                                           "%d/%m/%Y")
 
-Mascara$`1º Caso de COVID-19`<- as.Date(Mascara$`1º Caso de COVID-19`)
-Mascara$`1º Caso de COVID-19`<- format(Mascara$`1º Caso de COVID-19`,
+Politicas_Isolamento$`1º Caso de COVID-19`<- as.Date(Politicas_Isolamento$`1º Caso de COVID-19`)
+Politicas_Isolamento$`1º Caso de COVID-19`<- format(Politicas_Isolamento$`1º Caso de COVID-19`,
                                        "%d/%m/%Y")
 
-Mascara$`Registro do 1º dia com óbitos` <- as.Date(Mascara$`Registro do 1º dia com óbitos`)
-Mascara$`Registro do 1º dia com óbitos` <- format(Mascara$`Registro do 1º dia com óbitos`,
+Politicas_Isolamento$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Isolamento$`Registro do 1º dia com óbitos`)
+Politicas_Isolamento$`Registro do 1º dia com óbitos` <- format(Politicas_Isolamento$`Registro do 1º dia com óbitos`,
                                                   "%d/%m/%Y")
 
 # Reclassificando para colocar em ordem crescente:
 
-Mascara = arrange(Mascara, Distância0)
+Politicas_Isolamento = arrange(Politicas_Isolamento, Distância0)
 
-Mascara <- Mascara %>% 
+Politicas_Isolamento <- Politicas_Isolamento %>% 
   mutate_all(replace_na, 0)
 
-Mascara$Município = factor(Mascara$Município,
-                                levels = Mascara$Município)
+Politicas_Isolamento$Município = factor(Politicas_Isolamento$Município,
+                                levels = Politicas_Isolamento$Município)
 
-Mascara$Distância0 = as.integer(Mascara$Distância0)
+Politicas_Isolamento$Distância0 = as.integer(Politicas_Isolamento$Distância0)
 
 # Gráfico no ggplot:
 
-Mascara$Distância = as.character(Mascara[,2])
+Politicas_Isolamento$Distância = as.character(Politicas_Isolamento[,2])
 
-Mascara <- ggplot(Mascara,
+Isolamento <- ggplot(Politicas_Isolamento,
                   aes(x = Município,
                       y = Distância0,
                       label = Distância,
@@ -682,8 +750,8 @@ Mascara <- ggplot(Mascara,
                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seashell4","rosybrown1",
-                    "orange1","seashell4",
+           fill = c("peru", "orange1",
+                    "seashell4", "seashell4",
                     "orange1","seagreen",
                     "mediumaquamarine","tomato",
                     "maroon", "yellowgreen"),
@@ -698,11 +766,382 @@ Mascara <- ggplot(Mascara,
 
 # Tornando o gráfico interativo:
 
-Mascara <- ggplotly(Mascara,
+Isolamento <- ggplotly(Isolamento,
                     tooltip = c("x","label", "label1",
                                 "label2","label3","label4",
                                 "label5", "label6"))
+# Acrescentando LOGO:
+
+Isolamento <- Isolamento %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+
 # Salvando gráfico:
 
-saveRDS(Mascara, file = "Uso de Máscara.rds")
+saveRDS(Isolamento, file = "Isolamento.rds")
+
+########################### 05 - Hospital ###############################
+
+Politicas_Hospital <- PoliticasPublicas %>%
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
+  filter(Medidas == "Hospital")
+
+# Colocando no formato data:
+
+Politicas_Hospital$`Publicação do Decreto` <- format(Politicas_Hospital$`Publicação do Decreto`,
+                                                     "%d/%m/%Y")
+
+Politicas_Hospital$`1º Caso de COVID-19`<- as.Date(Politicas_Hospital$`1º Caso de COVID-19`)
+Politicas_Hospital$`1º Caso de COVID-19`<- format(Politicas_Hospital$`1º Caso de COVID-19`,
+                                                  "%d/%m/%Y")
+
+Politicas_Hospital$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Hospital$`Registro do 1º dia com óbitos`)
+Politicas_Hospital$`Registro do 1º dia com óbitos` <- format(Politicas_Hospital$`Registro do 1º dia com óbitos`,
+                                                             "%d/%m/%Y")
+
+# Reclassificando para colocar em ordem crescente:
+
+Politicas_Hospital = arrange(Politicas_Hospital, Distância0)
+
+Politicas_Hospital <- Politicas_Hospital %>% 
+  mutate_all(replace_na, 0)
+
+Politicas_Hospital$Município = factor(Politicas_Hospital$Município,
+                                      levels = Politicas_Hospital$Município)
+
+Politicas_Hospital$Distância0 = as.integer(Politicas_Hospital$Distância0)
+
+# Gráfico no ggplot:
+
+Politicas_Hospital$Distância = as.character(Politicas_Hospital[,2])
+
+Hospital <- ggplot(Politicas_Hospital,
+                   aes(x = Município,
+                       y = Distância0,
+                       label = Distância,
+                       label1 = Rank,
+                       label2 = `Publicação do Decreto`,
+                       label3 = `1º Caso de COVID-19`,
+                       label4 = `Casos Confirmados`,
+                       label5 = `Registro do 1º dia com óbitos`,
+                       label6 = `Número de óbitos`)) +
+  geom_bar(stat = "identity",
+           col = "black",
+           fill = c("peru", "seashell4",
+                    "maroon", "orange1",
+                    "orange1","seagreen",
+                    "mediumaquamarine","tomato",
+                    "maroon", "yellowgreen"),
+           aes(fill = Municipio)) +
+  xlab("") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
+  ggtitle(titulo) +
+  theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x =element_text(face = "bold",size = 10),
+        legend.position = "none")
+
+# Tornando o gráfico interativo:
+
+Hospital <- ggplotly(Hospital,
+                     tooltip = c("x","label", "label1",
+                                 "label2","label3","label4",
+                                 "label5", "label6"))
+# Acrescentando LOGO:
+
+Hospital <- Hospital %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+
+# Salvando gráfico:
+
+saveRDS(Hospital, file = "Hospital.rds")
+
+
+########################### 06 - Economia ########################
+
+Politicas_Economia <- PoliticasPublicas %>%
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
+  filter(Medidas == "Economia")
+
+# Colocando no formato data:
+
+Politicas_Economia$`Publicação do Decreto` <- format(Politicas_Economia$`Publicação do Decreto`,
+                                          "%d/%m/%Y")
+
+Politicas_Economia$`1º Caso de COVID-19`<- as.Date(Politicas_Economia$`1º Caso de COVID-19`)
+Politicas_Economia$`1º Caso de COVID-19`<- format(Politicas_Economia$`1º Caso de COVID-19`,
+                                       "%d/%m/%Y")
+
+Politicas_Economia$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Economia$`Registro do 1º dia com óbitos`)
+Politicas_Economia$`Registro do 1º dia com óbitos` <- format(Politicas_Economia$`Registro do 1º dia com óbitos`,
+                                                  "%d/%m/%Y")
+
+# Reclassificando para colocar em ordem crescente:
+
+Politicas_Economia = arrange(Politicas_Economia, Distância0)
+
+Politicas_Economia <- Politicas_Economia %>% 
+  mutate_all(replace_na, 0)
+
+Politicas_Economia$Município = factor(Politicas_Economia$Município,
+                           levels = Politicas_Economia$Município)
+
+Politicas_Economia$Distância0 = as.integer(Politicas_Economia$Distância0)
+
+# Gráfico no ggplot:
+
+Politicas_Economia$Distância = as.character(Politicas_Economia[,2])
+
+Economia <- ggplot(Politicas_Economia,
+                  aes(x = Município,
+                      y = Distância0,
+                      label = Distância,
+                      label1 = Rank,
+                      label2 = `Publicação do Decreto`,
+                      label3 = `1º Caso de COVID-19`,
+                      label4 = `Casos Confirmados`,
+                      label5 = `Registro do 1º dia com óbitos`,
+                      label6 = `Número de óbitos`)) +
+  geom_bar(stat = "identity",
+           col = "black",
+           fill = c("seagreen", "peru",
+                    "seashell4", "orange1",
+                    "maroon","seagreen",
+                    "mediumaquamarine","tomato",
+                    "maroon", "yellowgreen"),
+           aes(fill = Municipio)) +
+  xlab("") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
+  ggtitle(titulo) +
+  theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x =element_text(face = "bold",size = 10),
+        legend.position = "none")
+
+# Tornando o gráfico interativo:
+
+Economia <- ggplotly(Economia,
+                    tooltip = c("x","label", "label1",
+                                "label2","label3","label4",
+                                "label5", "label6"))
+# Acrescentando LOGO:
+
+Economia <- Economia %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+# Salvando gráfico:
+
+saveRDS(Economia, file = "Economia.rds")
+
+############################ 07 - Flexibilização ###############################
+
+Politicas_Flexibilização <- PoliticasPublicas %>%
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
+  filter(Medidas == "Flexibilização")
+
+# Colocando no formato data:
+
+Politicas_Flexibilização$`Publicação do Decreto` <- format(Politicas_Flexibilização$`Publicação do Decreto`,
+                                          "%d/%m/%Y")
+
+Politicas_Flexibilização$`1º Caso de COVID-19`<- as.Date(Politicas_Flexibilização$`1º Caso de COVID-19`)
+Politicas_Flexibilização$`1º Caso de COVID-19`<- format(Politicas_Flexibilização$`1º Caso de COVID-19`,
+                                       "%d/%m/%Y")
+
+Politicas_Flexibilização$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Flexibilização$`Registro do 1º dia com óbitos`)
+Politicas_Flexibilização$`Registro do 1º dia com óbitos` <- format(Politicas_Flexibilização$`Registro do 1º dia com óbitos`,
+                                                  "%d/%m/%Y")
+
+# Reclassificando para colocar em ordem crescente:
+
+Politicas_Flexibilização = arrange(Politicas_Flexibilização, Distância0)
+
+Politicas_Flexibilização <- Politicas_Flexibilização %>% 
+  mutate_all(replace_na, 0)
+
+Politicas_Flexibilização$Município = factor(Politicas_Flexibilização$Município,
+                           levels = Politicas_Flexibilização$Município)
+
+Politicas_Flexibilização$Distância0 = as.integer(Politicas_Flexibilização$Distância0)
+
+# Gráfico no ggplot:
+
+Politicas_Flexibilização$Distância = as.character(Politicas_Flexibilização[,2])
+
+Flexibilização <- ggplot(Politicas_Flexibilização,
+                  aes(x = Município,
+                      y = Distância0,
+                      label = Distância,
+                      label1 = Rank,
+                      label2 = `Publicação do Decreto`,
+                      label3 = `1º Caso de COVID-19`,
+                      label4 = `Casos Confirmados`,
+                      label5 = `Registro do 1º dia com óbitos`,
+                      label6 = `Número de óbitos`)) +
+  geom_bar(stat = "identity",
+           col = "black",
+           fill = c("orange1", "seashell4",
+                    "peru", "seashell4",
+                    "orange1","seagreen",
+                    "mediumaquamarine","tomato",
+                    "maroon", "yellowgreen"),
+           aes(fill = Municipio)) +
+  xlab("") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
+  ggtitle(titulo) +
+  theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x =element_text(face = "bold",size = 10),
+        legend.position = "none")
+
+# Tornando o gráfico interativo:
+
+Flexibilização <- ggplotly(Flexibilização,
+                    tooltip = c("x","label", "label1",
+                                "label2","label3","label4",
+                                "label5", "label6"))
+
+# Acrescentando LOGO:
+
+Flexibilização <- Flexibilização %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+# Salvando gráfico:
+
+saveRDS(Flexibilização, file = "Flexibilização.rds")
+
+############################ 08 - Emergência de Saúde Pública ###############################
+
+Politicas_Emergência <- PoliticasPublicas %>%
+  select(Município, Distância0, Medidas,`Publicação do Decreto`,
+         `1º Caso de COVID-19`,`Casos Confirmados`,
+         `Registro do 1º dia com óbitos`,`Número de óbitos`, Rank) %>%
+  filter(Medidas == "Emergência de Saúde Pública")
+
+# Colocando no formato data:
+
+Politicas_Emergência$`Publicação do Decreto` <- format(Politicas_Emergência$`Publicação do Decreto`,
+                                          "%d/%m/%Y")
+
+Politicas_Emergência$`1º Caso de COVID-19`<- as.Date(Politicas_Emergência$`1º Caso de COVID-19`)
+Politicas_Emergência$`1º Caso de COVID-19`<- format(Politicas_Emergência$`1º Caso de COVID-19`,
+                                       "%d/%m/%Y")
+
+Politicas_Emergência$`Registro do 1º dia com óbitos` <- as.Date(Politicas_Emergência$`Registro do 1º dia com óbitos`)
+Politicas_Emergência$`Registro do 1º dia com óbitos` <- format(Politicas_Emergência$`Registro do 1º dia com óbitos`,
+                                                  "%d/%m/%Y")
+
+# Reclassificando para colocar em ordem crescente:
+
+Politicas_Emergência = arrange(Politicas_Emergência, Distância0)
+
+Politicas_Emergência <- Politicas_Emergência %>% 
+  mutate_all(replace_na, 0)
+
+Politicas_Emergência$Município = factor(Politicas_Emergência$Município,
+                           levels = Politicas_Emergência$Município)
+
+Politicas_Emergência$Distância0 = as.integer(Politicas_Emergência$Distância0)
+
+# Gráfico no ggplot:
+
+Politicas_Emergência$Distância = as.character(Politicas_Emergência[,2])
+
+Emergência <- ggplot(Politicas_Emergência,
+                  aes(x = Município,
+                      y = Distância0,
+                      label = Distância,
+                      label1 = Rank,
+                      label2 = `Publicação do Decreto`,
+                      label3 = `1º Caso de COVID-19`,
+                      label4 = `Casos Confirmados`,
+                      label5 = `Registro do 1º dia com óbitos`,
+                      label6 = `Número de óbitos`)) +
+  geom_bar(stat = "identity",
+           col = "black",
+           fill = c("maroon", "seagreen",
+                    "royalblue2", "royalblue2",
+                    "mediumaquamarine", "orange1",
+                    "seashell4","tomato",
+                    "maroon", "yellowgreen"),
+           aes(fill = Municipio)) +
+  xlab("") +
+  ylab("Distância (em dias) para a confirmação do primeiro caso") +
+  ggtitle(titulo) +
+  theme(axis.title.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.text.x =element_text(face = "bold",size = 10),
+        legend.position = "none")
+
+# Tornando o gráfico interativo:
+
+Emergência <- ggplotly(Emergência,
+                    tooltip = c("x","label", "label1",
+                                "label2","label3","label4",
+                                "label5", "label6"))
+# Acrescentando LOGO:
+
+Emergência <- Emergência %>% 
+  layout(images = list(list(source = raster2uri(raster),
+                            xref = "paper",
+                            yref = "paper",
+                            x= 0,
+                            y= 0.25,
+                            sizex = 0.4,
+                            sizey = 0.4,
+                            opacity = 0.8
+  )
+  )
+  )
+
+# Salvando gráfico:
+
+saveRDS(Emergência, file = "Emergência.rds")
 
