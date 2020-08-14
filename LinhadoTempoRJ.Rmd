@@ -1,5 +1,5 @@
 ---
-title: "Comparação dos tempos de reação - Última Atualização: 29/06/2020"
+title: "Comparação dos tempos de reação - Última Atualização: 14/08/2020"
 output: 
   flexdashboard::flex_dashboard:
     theme: bootstrap
@@ -12,19 +12,10 @@ library(flexdashboard)
 ```
 
 ```{r}
-source("PoliticasRiodeJaneiro.R") ## Leitura do script PoliticasBrasil
+source("PoliticasRiodeJaneiro.R", encoding="WINDOWS-1252") ## Leitura do script PoliticasRiodeJaneiro
 ```
 
 ### 
-
-Trabalho
-===================================== 
-
-### 
-
-```{r}
-readRDS("Trabalho.rds")
-```
 
 Prevenção
 =====================================     
@@ -35,7 +26,25 @@ Prevenção
 readRDS("Prevenção.rds")
 ```
 
-Equipamento de Proteção
+Economia
+===================================== 
+
+### 
+
+```{r}
+readRDS("Economia.rds")
+```
+
+Emergência
+=====================================     
+
+### 
+    
+```{r}
+readRDS("Emergência.rds")
+```
+
+Equipamento
 =====================================     
 
 ### 
@@ -44,31 +53,13 @@ Equipamento de Proteção
 readRDS("Equipamento.rds")
 ```
 
-Isolamento Social
+Hospital
 =====================================     
 
 ### 
     
-```{r}
-readRDS("Isolamento.rds")
-```
-
-Hospital
-===================================== 
-
-### 
-
 ```{r}
 readRDS("Hospital.rds")
-```
-
-Economia
-=====================================     
-
-### 
-    
-```{r}
-readRDS("Economia.rds")
 ```
 
 Flexibilização
@@ -80,13 +71,13 @@ Flexibilização
 readRDS("Flexibilização.rds")
 ```
 
-Emergência de Saúde Pública
+Isolamento
 =====================================     
 
 ### 
     
 ```{r}
-readRDS("Emergência.rds")
+readRDS("Isolamento.rds")
 ```
 
 

@@ -253,126 +253,137 @@ PoliticasPublicas <- PoliticasPublicas %>%
         Medidas == "Hospital" | 
         Medidas == "Economia" |
         Medidas == "Flexibilização" |
-        Medidas == "Emergência de Saúde Pública"
-        )
+        Medidas == "Emergência de Saúde Pública" |
+        Medidas == "Profissional da Saúde")
 
 # Trabalho:
 
-PoliticasPublicas[nrow(PoliticasPublicas) + 5, "Município"] <- ""
-PoliticasPublicas[38,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[38,3] <-"Trabalho"
-PoliticasPublicas[39,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[39,3] <-"Trabalho"
-PoliticasPublicas[40,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[40,3] <-"Trabalho"
-PoliticasPublicas[41,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[41,3] <-"Trabalho"
-PoliticasPublicas[42,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[42,3] <-"Trabalho"
+PoliticasPublicas[nrow(PoliticasPublicas) + 4, "Município"] <- ""
+PoliticasPublicas[45,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[45,3] <-"Trabalho"
+PoliticasPublicas[46,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[46,3] <-"Trabalho"
+PoliticasPublicas[47,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[47,3] <-"Trabalho"
+PoliticasPublicas[48,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[48,3] <-"Trabalho"
 
 # Prevenção:
 
-PoliticasPublicas[nrow(PoliticasPublicas) + 3, "Município"] <- ""
-PoliticasPublicas[43,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[43,3] <-"Prevenção"
-PoliticasPublicas[44,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[44,3] <-"Prevenção"
-PoliticasPublicas[45,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[45,3] <-"Prevenção"
+PoliticasPublicas[nrow(PoliticasPublicas) + 2, "Município"] <- ""
+PoliticasPublicas[49,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[49,3] <-"Prevenção"
+PoliticasPublicas[50,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[50,3] <-"Prevenção"
 
 # Equipamento de Proteção:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 6, "Município"] <- ""
-PoliticasPublicas[46,1] <-"Itaboraí/RJ"
-PoliticasPublicas[46,3] <-"Equipamento de Proteção"
-PoliticasPublicas[47,1] <-"Mesquita/RJ"
-PoliticasPublicas[47,3] <-"Equipamento de Proteção"
-PoliticasPublicas[48,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[48,3] <-"Equipamento de Proteção"
-PoliticasPublicas[49,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[49,3] <-"Equipamento de Proteção"
-PoliticasPublicas[50,1] <-"São Gonçalo/RJ"
-PoliticasPublicas[50,3] <-"Equipamento de Proteção"
-PoliticasPublicas[51,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[51,1] <-"Itaboraí/RJ"
 PoliticasPublicas[51,3] <-"Equipamento de Proteção"
+PoliticasPublicas[52,1] <-"Mesquita/RJ"
+PoliticasPublicas[52,3] <-"Equipamento de Proteção"
+PoliticasPublicas[53,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[53,3] <-"Equipamento de Proteção"
+PoliticasPublicas[54,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[54,3] <-"Equipamento de Proteção"
+PoliticasPublicas[55,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[55,3] <-"Equipamento de Proteção"
+PoliticasPublicas[56,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[56,3] <-"Equipamento de Proteção"
 
 # Isolamento Social:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
-PoliticasPublicas[52,1] <-"Itaboraí/RJ"
-PoliticasPublicas[52,3] <-"Isolamento Social"
-PoliticasPublicas[53,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[53,3] <-"Isolamento Social"
-PoliticasPublicas[54,1] <-"Mesquita/RJ"
-PoliticasPublicas[54,3] <-"Isolamento Social"
-PoliticasPublicas[55,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[55,3] <-"Isolamento Social"
-PoliticasPublicas[56,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[56,3] <-"Isolamento Social"
-PoliticasPublicas[57,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[57,1] <-"Itaboraí/RJ"
 PoliticasPublicas[57,3] <-"Isolamento Social"
-PoliticasPublicas[58,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[58,1] <-"São João de Meriti/RJ"
 PoliticasPublicas[58,3] <-"Isolamento Social"
+PoliticasPublicas[59,1] <-"Mesquita/RJ"
+PoliticasPublicas[59,3] <-"Isolamento Social"
+PoliticasPublicas[60,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[60,3] <-"Isolamento Social"
+PoliticasPublicas[61,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[61,3] <-"Isolamento Social"
+PoliticasPublicas[62,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[62,3] <-"Isolamento Social"
+PoliticasPublicas[63,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[63,3] <-"Isolamento Social"
 
 # Hospital:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 6, "Município"] <- ""
-PoliticasPublicas[59,1] <-"Itaboraí/RJ"
-PoliticasPublicas[59,3] <-"Hospital"
-PoliticasPublicas[60,1] <-"São João de Merti/RJ"
-PoliticasPublicas[60,3] <-"Hospital"
-PoliticasPublicas[61,1] <-"Mesquita/RJ"
-PoliticasPublicas[61,3] <-"Hospital"
-PoliticasPublicas[62,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[62,3] <-"Hospital"
-PoliticasPublicas[63,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[63,3] <-"Hospital"
-PoliticasPublicas[64,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[64,1] <-"Itaboraí/RJ"
 PoliticasPublicas[64,3] <-"Hospital"
+PoliticasPublicas[65,1] <-"São João de Merti/RJ"
+PoliticasPublicas[65,3] <-"Hospital"
+PoliticasPublicas[66,1] <-"Mesquita/RJ"
+PoliticasPublicas[66,3] <-"Hospital"
+PoliticasPublicas[67,1] <-"Nova Iguaçu/RJ"
+PoliticasPublicas[67,3] <-"Hospital"
+PoliticasPublicas[68,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[68,3] <-"Hospital"
+PoliticasPublicas[69,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[69,3] <-"Hospital"
 
 # Economia:
 
-PoliticasPublicas[nrow(PoliticasPublicas) + 5, "Município"] <- ""
-PoliticasPublicas[65,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[65,3] <-"Economia"
-PoliticasPublicas[66,1] <-"Mesquita/RJ"
-PoliticasPublicas[66,3] <-"Economia"
-PoliticasPublicas[67,1] <-"Nova Iguaçu/RJ"
-PoliticasPublicas[67,3] <-"Economia"
-PoliticasPublicas[68,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[68,3] <-"Economia"
-PoliticasPublicas[69,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[69,3] <-"Economia"
+PoliticasPublicas[nrow(PoliticasPublicas) + 4, "Município"] <- ""
+PoliticasPublicas[70,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[70,3] <-"Economia"
+PoliticasPublicas[71,1] <-"Mesquita/RJ"
+PoliticasPublicas[71,3] <-"Economia"
+PoliticasPublicas[72,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[72,3] <-"Economia"
+PoliticasPublicas[73,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[73,3] <-"Economia"
 
 # Flexibilização:
 
 PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
-PoliticasPublicas[70,1] <-"Itaboraí/RJ"
-PoliticasPublicas[70,3] <-"Flexibilização"
-PoliticasPublicas[71,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[71,3] <-"Flexibilização"
-PoliticasPublicas[72,1] <-"Mesquita/RJ"
-PoliticasPublicas[72,3] <-"Flexibilização"
-PoliticasPublicas[73,1] <-"Nova iguaçu/RJ"
-PoliticasPublicas[73,3] <-"Flexibilização"
-PoliticasPublicas[74,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[74,1] <-"Itaboraí/RJ"
 PoliticasPublicas[74,3] <-"Flexibilização"
-PoliticasPublicas[75,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[75,1] <-"São João de Meriti/RJ"
 PoliticasPublicas[75,3] <-"Flexibilização"
-PoliticasPublicas[76,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[76,1] <-"Mesquita/RJ"
 PoliticasPublicas[76,3] <-"Flexibilização"
+PoliticasPublicas[77,1] <-"Nova iguaçu/RJ"
+PoliticasPublicas[77,3] <-"Flexibilização"
+PoliticasPublicas[78,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[78,3] <-"Flexibilização"
+PoliticasPublicas[79,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[79,3] <-"Flexibilização"
+PoliticasPublicas[80,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[80,3] <-"Flexibilização"
 
 # Emergência de Saúde Pública
 
-PoliticasPublicas[nrow(PoliticasPublicas) + 4, "Município"] <- ""
-PoliticasPublicas[77,1] <-"Volta Redonda/RJ"
-PoliticasPublicas[77,3] <-"Emergência de Saúde Pública"
-PoliticasPublicas[78,1] <-"São João de Meriti/RJ"
-PoliticasPublicas[78,3] <-"Emergência de Saúde Pública"
-PoliticasPublicas[79,1] <-"Duque de Caxias/RJ"
-PoliticasPublicas[79,3] <-"Emergência de Saúde Pública"
-PoliticasPublicas[80,1] <-"Belford Roxo/RJ"
-PoliticasPublicas[80,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[nrow(PoliticasPublicas) + 3, "Município"] <- ""
+PoliticasPublicas[81,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[81,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[82,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[82,3] <-"Emergência de Saúde Pública"
+PoliticasPublicas[83,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[83,3] <-"Emergência de Saúde Pública"
+
+# Profissional da Saúde
+
+PoliticasPublicas[nrow(PoliticasPublicas) + 7, "Município"] <- ""
+PoliticasPublicas[84,1] <-"Niterói/RJ"
+PoliticasPublicas[84,3] <-"Profissional da Saúde"
+PoliticasPublicas[85,1] <-"São João de Meriti/RJ"
+PoliticasPublicas[85,3] <-"Profissional da Saúde"
+PoliticasPublicas[86,1] <-"Mesquita/RJ"
+PoliticasPublicas[86,3] <-"Profissional da Saúde"
+PoliticasPublicas[87,1] <-"Nova iguaçu/RJ"
+PoliticasPublicas[87,3] <-"Profissional da Saúde"
+PoliticasPublicas[88,1] <-"Duque de Caxias/RJ"
+PoliticasPublicas[88,3] <-"Profissional da Saúde"
+PoliticasPublicas[89,1] <-"São Gonçalo/RJ"
+PoliticasPublicas[89,3] <-"Profissional da Saúde"
+PoliticasPublicas[90,1] <-"Belford Roxo/RJ"
+PoliticasPublicas[90,3] <-"Profissional da Saúde"
+
 
 # Ranking:
 
@@ -416,24 +427,44 @@ Emergência <- PoliticasPublicas %>%
   filter(Medidas == "Emergência de Saúde Pública") %>% 
   arrange(Distância0)
 
-PoliticasPublicas <- bind_rows(Trabalho, Prevenção, Equipamento, Isolamento, 
-                       Hospital, Economia, Flexibilização, Emergência)
+Profissional <- PoliticasPublicas %>% 
+  select(Município, everything()) %>% 
+  filter(Medidas == "Profissional da Saúde") %>% 
+  arrange(Distância0)
 
-Rank <- as.data.frame(paste0(rep(1:10,8),"º"))
+PoliticasPublicas <- bind_rows(Trabalho, Prevenção, Equipamento, Isolamento, 
+                      Hospital, Economia, Flexibilização, Emergência,
+                      Profissional)
+
+Rank <- as.data.frame(paste0(rep(1:10,9),"º"))
 colnames(Rank) <- "Rank"
 PoliticasPublicas$`Rank` <- Rank$Rank
 
 # Retirando o "/RJ" dos nomes:
 
-PoliticasPublicas$Município <-  str_sub(PoliticasPublicas$Município, end = -4)
+PoliticasPublicas$Município <-  str_sub(PoliticasPublicas$Município,
+                                        end = -4)
 
 ## Visualização dos gráficos ##
 ### Gráficos por medidas:
 
-titulo = "Respostas Políticas"
+titulo = " "
 
 image <- image_fill(image_read("logo_get_uff_covid.png"), 'none')
 raster <- as.raster(image)
+
+# Cores das barras:
+
+fillCol = c("royalblue2", "maroon",
+            "seagreen", "peru",
+            "seashell4", "orange1",
+            "rosybrown1","tomato",
+            "maroon", "yellowgreen") 
+
+names(fillCol)  = c("São Gonçalo","Itaboraí","Mesquita","Nova Iguaçu"
+                    ,"Niterói","Rio de Janeiro","Volta Redonda",
+                    "São João de Meriti","Duque de Caxias",
+                    "Belford Roxo")
 
 ########################### 01 - Trabalho ################################
 
@@ -485,11 +516,7 @@ Trabalho <- ggplot(Politicas_Trabalho,
                                label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seagreen","peru",
-                   "seashell4","royalblue2",
-                   "orange1","rosybrown1",
-                   "mediumaquamarine","tomato",
-                   "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Trabalho$Município)],
            aes(fill = Município)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -511,10 +538,10 @@ Trabalho <- Trabalho %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -573,11 +600,7 @@ Prevenção <- ggplot(Politicas_Prevenção,
                                 label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("royalblue2", "maroon",
-                    "seagreen", "peru",
-                    "seashell4", "orange1",
-                    "rosybrown1","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Prevenção$Município)],
            aes(fill = Município)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -599,10 +622,10 @@ Prevenção <- Prevenção %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -661,11 +684,7 @@ Equipamento <- ggplot(Politicas_Equipamento,
                        label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("peru", "rosybrown1",
-                    "orange1", "seashell4",
-                    "orange1","seagreen",
-                    "mediumaquamarine","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Equipamento$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -687,10 +706,10 @@ Equipamento <- Equipamento %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -750,11 +769,7 @@ Isolamento <- ggplot(Politicas_Isolamento,
                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("peru", "orange1",
-                    "seashell4", "seashell4",
-                    "orange1","seagreen",
-                    "mediumaquamarine","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Isolamento$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -776,10 +791,10 @@ Isolamento <- Isolamento %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -839,11 +854,7 @@ Hospital <- ggplot(Politicas_Hospital,
                        label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("peru", "seashell4",
-                    "maroon", "orange1",
-                    "orange1","seagreen",
-                    "mediumaquamarine","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Hospital$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -865,10 +876,10 @@ Hospital <- Hospital %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -929,11 +940,7 @@ Economia <- ggplot(Politicas_Economia,
                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("seagreen", "peru",
-                    "seashell4", "orange1",
-                    "maroon","seagreen",
-                    "mediumaquamarine","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Economia$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -955,10 +962,10 @@ Economia <- Economia %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -1017,11 +1024,7 @@ Flexibilização <- ggplot(Politicas_Flexibilização,
                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("orange1", "seashell4",
-                    "peru", "seashell4",
-                    "orange1","seagreen",
-                    "mediumaquamarine","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Flexibilização$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -1044,10 +1047,10 @@ Flexibilização <- Flexibilização %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
@@ -1106,11 +1109,7 @@ Emergência <- ggplot(Politicas_Emergência,
                       label6 = `Número de óbitos`)) +
   geom_bar(stat = "identity",
            col = "black",
-           fill = c("maroon", "seagreen",
-                    "royalblue2", "royalblue2",
-                    "mediumaquamarine", "orange1",
-                    "seashell4","tomato",
-                    "maroon", "yellowgreen"),
+           fill = fillCol[paste0(Politicas_Emergência$Município)],
            aes(fill = Municipio)) +
   xlab("") +
   ylab("Distância (em dias) para a confirmação do primeiro caso") +
@@ -1132,14 +1131,15 @@ Emergência <- Emergência %>%
   layout(images = list(list(source = raster2uri(raster),
                             xref = "paper",
                             yref = "paper",
-                            x= 0,
-                            y= 0.25,
-                            sizex = 0.4,
-                            sizey = 0.4,
+                            x= .7,
+                            y= 0.2,
+                            sizex = 0.25,
+                            sizey = 0.25,
                             opacity = 0.8
   )
   )
   )
+
 
 # Salvando gráfico:
 
